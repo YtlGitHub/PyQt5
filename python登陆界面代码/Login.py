@@ -14,7 +14,7 @@ class MyWindow(QMainWindow):
         self.database = Database('./data.db')  # 数据路径
         self.sign_up_win = SignWindow  # 创建的注册窗口
         # self.resize(1000, 800)  # resize -> 设置窗口的大小
-        self.setFixedSize(1000, 800)  # setFixedSize 固定窗口大小
+        self.setFixedSize(1000, 700)  # setFixedSize 固定窗口大小
         self.setWindowTitle('Login in')  # setWindowTitle -> 设置窗口的标题
         self.set_ui()
 
@@ -32,9 +32,9 @@ class MyWindow(QMainWindow):
     def set_background_image(self):
         """添加背景图片"""
         self.frame = QFrame(self)
-        self.frame.resize(1000, 520)
-        self.frame.move(40, 150)
-        self.frame.setStyleSheet('background-image: url("./IMG/python.png"); background-repeat: no-repeat; text-align:center;')
+        self.frame.resize(1000, 700)
+        self.frame.move(0, 0)
+        self.frame.setStyleSheet('background-image: url("./IMG/1.jpg"); background-repeat: no-repeat; text-align:center;')
 
     def add_label(self):
         # 我们来设置以下字体，利用 QFont对象来创建一个字体对象，然后使用QLabel对象的setFont方法进行设置
@@ -48,13 +48,13 @@ class MyWindow(QMainWindow):
         self.cyberits_label = QLabel(self)  # 创建文本标签
         self.username_label.setText('username')  # setText -> 设置文本内容
         self.password_label.setText('password')  # 设置标签中的文本
-        self.cyberits_label.setText('Cyberist--a python learner')  # 设置标签中的文本
+        self.cyberits_label.setText('Welcome to the login interface of Ytl')  # 设置标签中的文本
         self.username_label.setFixedSize(240, 40)  # setFixedSize -> 设置不可修改的窗口大小
         self.password_label.setFixedSize(240, 40)  # 设置标签的大小
-        self.cyberits_label.setFixedSize(600, 40)  # 设置标签大小
+        self.cyberits_label.setFixedSize(700, 40)  # 设置标签大小
         self.username_label.move(120, 530)  # 设置文本位置
         self.password_label.move(120, 600)  # 设置文本位置
-        self.cyberits_label.move(280, 700)  # 设置文本位置
+        self.cyberits_label.move(150, 100)  # 设置文本位置
         self.username_label.setFont(label_font)  # 设置字体样式
         self.password_label.setFont(label_font)  # 设置字体样式
         self.cyberits_label.setFont(label_font)  # 设置字体样式
