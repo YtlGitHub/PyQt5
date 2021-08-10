@@ -7,6 +7,7 @@ import os
 from Sign_Up import SignWindow
 from Database import Database
 from Main import Main
+from Admin import AdminWindow
 
 
 class MyWindow(QMainWindow):
@@ -14,6 +15,7 @@ class MyWindow(QMainWindow):
         super().__init__()
         self.icon = QIcon("./IMG/logo.png")  # 图标
         self.database = Database('./data.db')  # 数据路径
+        self.admin_win = AdminWindow()  # 创建管理员界面
         self.sign_up_win = SignWindow()  # 创建的注册窗口
         self.main_win = Main()  # 登入后的主页面
         self.setWindowTitle('Login in')  # setWindowTitle -> 设置窗口的标题
