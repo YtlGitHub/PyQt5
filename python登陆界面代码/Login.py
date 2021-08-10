@@ -3,8 +3,10 @@
 from PyQt5.Qt import *
 # sys -> 获取系统的信息，比如命令行的，并且承担关闭窗口后完全退出的责任
 import sys
+import os
 from Sign_Up import SignWindow
 from Database import Database
+from Main import Main
 
 
 class MyWindow(QMainWindow):
@@ -12,22 +14,23 @@ class MyWindow(QMainWindow):
         super().__init__()
         self.icon = QIcon("./IMG/logo.png")  # 图标
         self.database = Database('./data.db')  # 数据路径
-        self.sign_up_win = SignWindow  # 创建的注册窗口
-        # self.resize(1000, 800)  # resize -> 设置窗口的大小
-        self.setFixedSize(1000, 700)  # setFixedSize 固定窗口大小
+        self.sign_up_win = SignWindow()  # 创建的注册窗口
+        self.main_win = Main()  # 登入后的主页面
         self.setWindowTitle('Login in')  # setWindowTitle -> 设置窗口的标题
+        self.setFixedSize(1000, 700)  # setFixedSize 固定窗口大小
+        # self.resize(1000, 800)  # resize -> 设置窗口的大小
         self.set_ui()
-
-    def set_ui(self):
-        self.set_background_image()
-        self.change_icon()
-        self.add_label()
-        self.add_line_edit()
-        self.add_button()
 
     def change_icon(self):
         """用来修改图像的图标"""
         self.setWindowIcon(self.icon)
+
+    def set_ui(self):
+        self.set_background_image()  # 设置背景图
+        self.change_icon()  # 设置图标
+        self.add_label()  # 添加标签/字体
+        self.add_line_edit()  # 添加输入框
+        self.add_button()  # 添加按钮
 
     def set_background_image(self):
         """添加背景图片"""
@@ -123,11 +126,10 @@ class MyWindow(QMainWindow):
         username = self.username_edit.text()
         password = self.password_edit.text()
         data = self.database.find_password_by_username(username)  # 在数据库中查找数据
-        print(data)
         if username and password:  # 如果两个输入框都不为空
             if data:
                 if str(data[0][0]) == password:
-                    QMessageBox.information(self, 'Successfully', 'Login in successful \n Welcome {}'.format(username), QMessageBox.Yes | QMessageBox.No)
+                    # QMessageBox.information(self, 'Successfully', 'Login in successful \n Welcome {}'.format(username), QMessageBox.Yes | QMessageBox.No)
                     self.password_edit.setText('')  # 登录成功，将之前的用户信息清除
                     self.username_edit.setText('')
                     self.close()
@@ -135,7 +137,6 @@ class MyWindow(QMainWindow):
                         self.admin_win.show()
                     else:
                         self.main_win.show()  # 如果不是进入客户管理界面
-
                 else:
                     QMessageBox.information(self, 'Failed', 'Password is wrong, try again', QMessageBox.Yes | QMessageBox.No)
             else:
@@ -148,14 +149,10 @@ class MyWindow(QMainWindow):
     def sign_up_window(self):
         self.sign_up_win.setWindowIcon(self.icon)
         self.sign_up_win.move(self.x() + 100, self.y() + 100)  # 移动一下注册窗口，以免和之前的重复
-        frame = QFrame(self.sign_up_win)
         self.sign_up_win.setWindowFlag(Qt.Dialog)
-        frame.resize(1000, 300)
-        frame.setStyleSheet('background-image: url("./IMG/python.png"); background-repeat: no-repeat;')
-        frame.move(40, 150)
         # 打开注册窗口时，清除原来的信息
-        self.password_edit.setText('')
         self.username_edit.setText('')
+        self.password_edit.setText('')
         self.sign_up_win.show()
 
     def closeEvent(self, event):
@@ -167,7 +164,7 @@ if __name__ == '__main__':
     # 创建一个窗口window并且调用show方法来显示窗口2
     window = MyWindow()
     window.show()
-    # app.exec_() 可以让窗口一直运行知道被关闭，类似于tkinter中的mainloop方法
+    # app.exec_() 可以让窗口一直运行直到被关闭，类似于tkinter中的mainloop方法
     # sys.exit(app.exec_())可以用来判断程序是否正常退出
     sys.exit(app.exec_())
 

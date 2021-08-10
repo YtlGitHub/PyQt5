@@ -1,21 +1,30 @@
-from PyQt5.QtWidgets import QLabel, QLineEdit, QWidget, QPushButton, \
-    QMessageBox, QApplication
+from PyQt5.QtWidgets import QLabel, QLineEdit, QWidget, QPushButton, QMessageBox, QApplication, QFrame
 from PyQt5.QtGui import QFont
 from Database import Database
 import sys
+import sqlite3
 
 
 class SignWindow(QWidget):
     def __init__(self):
         super(SignWindow, self).__init__()
+        self.database = Database('./data.db')
         self.setWindowTitle("Sign up")  # 设置标题
-        self.resize(1000, 800)  # 设置窗口的大小
+        self.resize(1000, 600)  # 设置窗口的大小
         self.set_ui()  # 调用其他的设计方法
 
     def set_ui(self):  # 集合所有的设计
+        self.set_background_image()
         self.add_line_edit()
         self.add_button()
         self.add_label()
+
+    def set_background_image(self):
+        """添加背景图片"""
+        self.frame = QFrame(self)
+        self.frame.resize(1000, 700)
+        self.frame.move(0, 0)
+        self.frame.setStyleSheet('background-image: url("./IMG/2.jpg"); background-repeat: no-repeat; text-align:center;')
 
     def add_label(self):
         """添加相应的标签"""
@@ -43,10 +52,10 @@ class SignWindow(QWidget):
         self.confirm_label.setFixedSize(240, 40)
 
         # 设置对应的位置，注意move不是移动多少，而是直接移动到
-        self.username_label.move(120, 530)
-        self.password_label.move(120, 600)
-        self.cyberits_label.move(280, 730)
-        self.confirm_label.move(120, 670)
+        self.username_label.move(120, 330)
+        self.password_label.move(120, 400)
+        self.cyberits_label.move(280, 530)
+        self.confirm_label.move(120, 470)
 
         # 设置字体
         self.username_label.setFont(label_font)
@@ -88,9 +97,9 @@ class SignWindow(QWidget):
         self.confirm_edit.setFixedSize(350, 40)
 
         # 控制位置
-        self.username_edit.move(320, 530)
-        self.password_edit.move(320, 600)
-        self.confirm_edit.move(320, 670)
+        self.username_edit.move(320, 330)
+        self.password_edit.move(320, 400)
+        self.confirm_edit.move(320, 470)
 
     def add_button(self):
         """添加按钮"""
@@ -101,10 +110,10 @@ class SignWindow(QWidget):
         self.sign_button = QPushButton(self)
         self.sign_button.setFixedSize(160, 50)
         self.sign_button.setFont(button_font)
-        self.sign_button.move(750, 600)
+        self.sign_button.move(750, 400)
         self.sign_button.setText("Sign up")
-
         self.sign_button.setShortcut('Return')
+        self.sign_button.clicked.connect(self.sign_up)
 
     def sign_up(self):
         """实现注册功能"""
@@ -113,46 +122,41 @@ class SignWindow(QWidget):
         confirm = self.confirm_edit.text()
 
         if not password or not confirm:  # 如果有一个密码或者密码确认框为空
-            QMessageBox.information(self, 'Error', 'The password is empty', QMessageBox.Yes)
-        elif self.is_has(username):  # 如果用户名已经存在
-            QMessageBox.information(self, 'Error', 'The username already exists', QMessageBox.Yes)
+            QMessageBox.information(self, 'Error', 'The password is empty',
+                                    QMessageBox.Yes)
+        elif self.database.is_has(username):  # 如果用户名已经存在
+            QMessageBox.information(self, 'Error',
+                                    'The username already exists',
+                                    QMessageBox.Yes)
         else:
             if password == confirm and password:  # 如果两次密码一致，并且不为空
-                connect = sqlite3.connect('./data.db')
-                cursor = connect.cursor()
-                sql = 'INSERT INTO data (username, password) VALUES(?,?)'  # 添加入数据库
-                cursor.execute(sql, (username, password))
-                connect.commit()
-                cursor.close()
-                connect.close()
-                QMessageBox.information(self, 'Successfully', 'Sign up successfully'.format(username),
-                                        QMessageBox.Yes)
-                self.close()  # 注册完毕之后关闭窗口
-
+                if len(username) < 5:
+                    QMessageBox.information(self, 'Error',
+                                            'The username is too short, change it for a long one, at least 5 words',
+                                            QMessageBox.Yes, QMessageBox.Yes)
+                    return
+                if len(password) < 6:
+                    QMessageBox.information(self, 'Error',
+                                            'You password\'s length is less than 6, please input again',
+                                            QMessageBox.Yes)
+                    return
+                else:
+                    self.database.insert_table(username, password)  # 将用户信息写入数据库
+                    QMessageBox.information(self, 'Successfully',
+                                            'Sign up successfully'.format(
+                                                username),
+                                            QMessageBox.Yes)
+                    self.close()  # 注册完毕之后关闭窗口
             else:
-                QMessageBox.information(self, 'Error', 'The password is not equal', QMessageBox.Yes)
+                QMessageBox.information(self, 'Error',
+                                        'The password is not equal',
+                                        QMessageBox.Yes)
 
     def closeEvent(self, event):
         """关闭之后将输入框清空"""
         self.username_edit.setText('')
         self.confirm_edit.setText('')
         self.password_edit.setText('')
-
-    @staticmethod
-    def is_has(username):
-        """判断数据库中是否含有用户名"""
-        connect = sqlite3.connect('./data.db')
-        cursor = connect.cursor()
-        sql = 'SELECT * FROM data WHERE username=?'
-        result = cursor.execute(sql, (username,))  # 执行sqlite语句
-        connect.commit()
-        data = result.fetchall()  # 获取所有的内容
-        cursor.close()
-        connect.close()
-        if data:
-            return True
-        else:
-            return False
 
 
 if __name__ == '__main__':
