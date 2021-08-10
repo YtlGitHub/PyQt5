@@ -24,7 +24,7 @@ class Main(QMainWindow):
 
         self.input_number = QLineEdit(self)  # 创建一个输入框
         self.input_number.setFont(number_font)  # 设置输入框里面的字体
-        self.input_number.setPlaceholderText("guess_number")  # 设置提示语
+        self.input_number.setPlaceholderText("请输入数字")  # 设置提示语
         self.input_number.setFixedSize(200, 100)  # 设置输入框的大小
         self.input_number.move(500, 100)  # 设置窗口的位置
 
