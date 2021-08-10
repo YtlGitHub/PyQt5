@@ -1,7 +1,7 @@
 import sys
 import pygame
-from bullet import Bullet
-from alien import Alien
+from alien_game.bullet import Bullet
+from alien_game.alien import Alien
 from time import sleep
 
 

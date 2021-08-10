@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QMessageBox
 from PyQt5.QtGui import QIcon, QFont
+from alien_game.alien_invasion import RunGame
 
 
 class Main(QMainWindow):
@@ -34,7 +35,14 @@ class Main(QMainWindow):
         self.determine_button.move(750, 100)  # 设置确定按钮位置
         self.determine_button.setText('确定')
 
+        self.Fireworks_button = QPushButton(self)  # 创建一个打UFO按钮
+        self.Fireworks_button.setFixedSize(100, 100)  # 设置确定按钮大小
+        self.Fireworks_button.setFont(number_font)  # 设置确定按钮字体
+        self.Fireworks_button.move(150, 100)  # 设置确定按钮位置
+        self.Fireworks_button.setText('打UFO')
+
         self.determine_button.clicked.connect(self.number_text)
+        self.Fireworks_button.clicked.connect(RunGame.run_game)
 
     def number_text(self):
         a = self.input_number.text()
