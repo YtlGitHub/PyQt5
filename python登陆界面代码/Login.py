@@ -115,30 +115,29 @@ class MyWindow(QMainWindow):
         self.sign_button.setText("Sign up")
 
         # 实现功能，按钮点击之后执行的动作
-        # self.login_button.clicked.connect(self.login)
-        # self.sign_button.clicked.connect(self.sign_up_window)
+        self.login_button.clicked.connect(self.login)
+        self.sign_button.clicked.connect(self.sign_up_window)
 
     def login(self):
         """登录功能实现"""
         username = self.username_edit.text()
         password = self.password_edit.text()
         data = self.database.find_password_by_username(username)  # 在数据库中查找数据
+        print(data)
         if username and password:  # 如果两个输入框都不为空
             if data:
                 if str(data[0][0]) == password:
-                    QMessageBox.information(self, 'Successfully', 'Login in successful \n Welcome {}'.format(username),
-                                            QMessageBox.Yes | QMessageBox.No)
+                    QMessageBox.information(self, 'Successfully', 'Login in successful \n Welcome {}'.format(username), QMessageBox.Yes | QMessageBox.No)
                     self.password_edit.setText('')  # 登录成功，将之前的用户信息清除
                     self.username_edit.setText('')
                     self.close()
                     if username == 'admin':  # 如果是管理员，进入管理界面
                         self.admin_win.show()
                     else:
-                        self.main_win.show()
+                        self.main_win.show()  # 如果不是进入客户管理界面
 
                 else:
-                    QMessageBox.information(self, 'Failed', 'Password is wrong, try again',
-                                            QMessageBox.Yes | QMessageBox.No)
+                    QMessageBox.information(self, 'Failed', 'Password is wrong, try again', QMessageBox.Yes | QMessageBox.No)
             else:
                 QMessageBox.information(self, 'Error', 'No such username', QMessageBox.Yes | QMessageBox.No)
         elif username:  # 如果用户名写了

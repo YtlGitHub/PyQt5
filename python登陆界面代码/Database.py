@@ -119,7 +119,7 @@ class Database:
 
 if __name__ == '__main__':
     data = Database('./data.db')
-    # data.insert_table('admin', 'password')
+    # data.insert_table('ytl', '123456')
     data_ = data.read_table()
     print(data_)
     # for i in range(23):  # 简单的创建用户
