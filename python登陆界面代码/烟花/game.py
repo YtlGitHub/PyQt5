@@ -1,15 +1,15 @@
-#第1步：模块导入
+# 第1步：模块导入
 import pygame, math, time, random, os
 from sys import exit
-#第2步：定义相关初始
-#win（窗口的w=宽，h=高）
+# 第2步：定义相关初始
+# win（窗口的w=宽，h=高）
 WIN_W = 1000
 WIN_H = 600
-#定义时间、显示、频率
-t1 = 0.18 #时间流速
+# 定义时间、显示、频率
+t1 = 0.18  # 时间流速
 show_n = 0
-show_frequency = 0.0015 #烟花绽放频率，数值越大频率越高
-#烟花颜色列表，下面随机抽出
+show_frequency = 0.0015  # 烟花绽放频率，数值越大频率越高
+# 烟花颜色列表，下面随机抽出
 color_list = [
                 [255, 50, 50],
                 [50, 255, 50],
@@ -19,16 +19,12 @@ color_list = [
                 [50, 255, 255],
                 [255, 255, 255]
              ]
-#初始化pygame和音乐mixer
+# 初始化pygame和音乐mixer
 pygame.init()
 pygame.mixer.init()
-#创建一个窗口,pygame.RESIZABLE窗口大小可调节和标题
-screen = pygame.display.set_mode((WIN_W, WIN_H),pygame.RESIZABLE, 32)
-pygame.display.set_caption("五彩烟花大放送")
-#背景音乐，可自定义
-sound_wav = pygame.mixer.music.load("music\半城烟沙.mp3")
-pygame.mixer.music.play()
-#Fireworks=烟花，定义主类
+
+
+# Fireworks=烟花，定义主类
 class Fireworks():
     is_show = False
     x, y = 0, 0
@@ -84,33 +80,49 @@ fk_list.append(Fireworks(300, 300, -20, n=600, color=[0, 0, 255], v=13))
 fk_list.append(Fireworks(300, 300, -20, n=700, color=[255, 0, 0], v=15))
 fk_list.append(Fireworks(300, 300, -20, n=800, color=[255, 255, 0], v=18))
 clock = pygame.time.Clock()
+
+
 # 烟花放送的主循环：
 # 游戏主循环
-while True:
-    if not pygame.mixer.music.get_busy():
-        pygame.mixer.music.play()
-    for event in pygame.event.get():
-        #pygame这个不能少，否则退出还在循环
-        if event.type == pygame.QUIT:
-            exit()
+def fireworks_main():
+    global show_n, sound_wav
 
-    screen.fill((0, 0, 0))
+    # 创建一个窗口,pygame.RESIZABLE窗口大小可调节和标题
+    screen = pygame.display.set_mode((WIN_W, WIN_H), pygame.RESIZABLE, 32)
+    pygame.display.set_caption("五彩烟花大放送")
 
-    # 放烟花
-    for i, fk in enumerate(fk_list):
-        if not fk.is_show:
-            fk.is_show = False
-            if random.random() < show_frequency * (len(fk_list) - show_n):
-                show_n += 1
-                fk.again()
-            continue
-        fk.run()
-        for p in fk.p_list:
-            x, y = fk.x + p[1] * math.cos(p[0]), fk.y + p[1] * math.sin(p[0])
-            if random.random() < 0.055:
-                screen.set_at((int(x), int(y)),(255,255,255))
-            else:
-                screen.set_at((int(x), int(y)), (int(fk.color[0]), int(fk.color[1]), int(fk.color[2])))
+    # 背景音乐，可自定义
+    sound_wav = pygame.mixer.music.load("烟花/music/半城烟沙.mp3")
+    pygame.mixer.music.play()
+    while True:
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.play()
+        for event in pygame.event.get():
+            #pygame这个不能少，否则退出还在循环
+            if event.type == pygame.QUIT:
+                exit()
 
-    pygame.display.update()
-    time_passed = clock.tick(50)
+        screen.fill((0, 0, 0))
+
+        # 放烟花
+        for i, fk in enumerate(fk_list):
+            if not fk.is_show:
+                fk.is_show = False
+                if random.random() < show_frequency * (len(fk_list) - show_n):
+                    show_n += 1
+                    fk.again()
+                continue
+            fk.run()
+            for p in fk.p_list:
+                x, y = fk.x + p[1] * math.cos(p[0]), fk.y + p[1] * math.sin(p[0])
+                if random.random() < 0.055:
+                    screen.set_at((int(x), int(y)),(255,255,255))
+                else:
+                    screen.set_at((int(x), int(y)), (int(fk.color[0]), int(fk.color[1]), int(fk.color[2])))
+
+        pygame.display.update()
+        time_passed = clock.tick(50)
+
+
+if __name__ == '__main__':
+    fireworks_main()

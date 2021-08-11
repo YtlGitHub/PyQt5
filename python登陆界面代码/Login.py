@@ -120,8 +120,8 @@ class MyWindow(QMainWindow):
         self.sign_button.setText("Sign up")
 
         # 实现功能，按钮点击之后执行的动作
-        self.login_button.clicked.connect(self.login)
-        self.sign_button.clicked.connect(self.sign_up_window)
+        self.login_button.clicked.connect(self.login)  # 点击登录按钮执行login方法
+        self.sign_button.clicked.connect(self.sign_up_window)  # 点击注册按钮执行sign_up_window方法
 
     def login(self):
         """登录功能实现"""
