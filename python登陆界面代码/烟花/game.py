@@ -94,7 +94,7 @@ def fireworks_main():
     # 背景音乐，可自定义
     pygame.mixer.music.load("烟花/music/半城烟沙.mp3")
     pygame.mixer.music.play()
-    
+
     while True:
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.play()
