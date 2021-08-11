@@ -138,7 +138,7 @@ class MyWindow(QMainWindow):
                     if username == 'admin':  # 如果是管理员，进入管理界面
                         self.admin_win.show()
                     else:
-                        self.main_win.show()  # 如果不是进入客户管理界面
+                        self.main_win.show()  # 否则进入客户管理界面
                 else:
                     QMessageBox.information(self, 'Failed', 'Password is wrong, try again', QMessageBox.Yes | QMessageBox.No)
             else:
