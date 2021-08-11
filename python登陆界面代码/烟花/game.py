@@ -85,15 +85,16 @@ clock = pygame.time.Clock()
 # 烟花放送的主循环：
 # 游戏主循环
 def fireworks_main():
-    global show_n, sound_wav
+    global show_n
 
     # 创建一个窗口,pygame.RESIZABLE窗口大小可调节和标题
     screen = pygame.display.set_mode((WIN_W, WIN_H), pygame.RESIZABLE, 32)
     pygame.display.set_caption("五彩烟花大放送")
 
     # 背景音乐，可自定义
-    sound_wav = pygame.mixer.music.load("烟花/music/半城烟沙.mp3")
+    pygame.mixer.music.load("烟花/music/半城烟沙.mp3")
     pygame.mixer.music.play()
+    
     while True:
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.play()
