@@ -63,6 +63,10 @@ class Main(QMainWindow):
         else:
             QMessageBox.information(self, 'Failed', '请输入数字', QMessageBox.Yes | QMessageBox.No)
 
+    def closeEvent(self, event):
+        """重写该方法主要是解决打开子窗口时，如果关闭了主窗口但子窗口仍显示的问题，使用sys.exit(0) 时就会只要关闭了主窗口，所有关联的子窗口也会全部关闭"""
+        sys.exit(0)  # 关闭登录窗口的时候，注册窗口也应该关闭
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
