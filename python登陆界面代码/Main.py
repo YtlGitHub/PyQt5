@@ -3,6 +3,9 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, Q
 from PyQt5.QtGui import QIcon, QFont
 from alien_game.alien_invasion import RunGame  # 导入打UFO游戏
 from 烟花 import game
+from YtlBlog import YtlBlog
+from GuessNumber import GuessNumber
+import random
 
 
 class Main(QMainWindow):
@@ -10,58 +13,64 @@ class Main(QMainWindow):
         super().__init__()
         self.setWindowTitle('Main page')
         self.setWindowIcon(QIcon('./IMG/logo.png'))
-        self.setFixedSize(1200, 800)
+        self.setFixedSize(1200, 700)
         self.setFont(QFont('Consolas'))
-        self.setStyleSheet("background-image: url('./IMG/4.jpg'); background-repeat: no repeat")
+        a = random.randint(0, 6)
+        print(a)
+        self.setStyleSheet(f"background-image: url('./IMG/{a}.jpg'); background-repeat: no repeat")
         # self.setWindowOpacity(0.9)
+        self.YtlBlog_win = YtlBlog()
+        self.guess_number_win = GuessNumber()
         self.set_ui()
 
     def set_ui(self):
-        self.guess_number()
+        self.number()
 
-    def guess_number(self):
+    def number(self):
         number_font = QFont()
         number_font.setFamily('Consolas')
         number_font.setPixelSize(30)
+        fixe_x = 100
+        fixe_y = 100
+        move_x = 50
+        move_y = 50
+        a_x = 100
+        a_y = 0
 
-        self.input_number = QLineEdit(self)  # 创建一个输入框
-        self.input_number.setFont(number_font)  # 设置输入框里面的字体
-        self.input_number.setPlaceholderText("请输入数字")  # 设置提示语
-        self.input_number.setFixedSize(200, 100)  # 设置输入框的大小
-        self.input_number.move(500, 100)  # 设置窗口的位置
+        self.YtlBlog_button = QPushButton(self)  # 创建一个YtlBlog花按钮
+        self.YtlBlog_button.setFixedSize(fixe_x + 20, fixe_y)  # 设置YtlBlog按钮大小
+        self.YtlBlog_button.setFont(number_font)  # 设置YtlBlog按钮字体
+        self.YtlBlog_button.move(move_x, move_y)  # 设置YtlBlog按钮位置
+        self.YtlBlog_button.setText('YtlBlog')
 
-        self.determine_button = QPushButton(self)  # 创建一个确定按钮
-        self.determine_button.setFixedSize(100, 100)  # 设置确定按钮大小
-        self.determine_button.setFont(number_font)  # 设置确定按钮字体
-        self.determine_button.move(750, 100)  # 设置确定按钮位置
-        self.determine_button.setText('确定')
+        self.determine_button = QPushButton(self)  # 创建一个猜数字按钮
+        self.determine_button.setFixedSize(fixe_x, fixe_y)  # 设置猜数字按钮大小
+        self.determine_button.setFont(number_font)  # 设置猜数字按钮字体
+        self.determine_button.move(move_x + 2*a_x, move_y + a_y)  # 设置猜数字按钮位置
+        self.determine_button.setText('猜数字')
 
         self.UFO_button = QPushButton(self)  # 创建一个打UFO按钮
-        self.UFO_button.setFixedSize(100, 100)  # 设置确定按钮大小
-        self.UFO_button.setFont(number_font)  # 设置确定按钮字体
-        self.UFO_button.move(150, 100)  # 设置确定按钮位置
+        self.UFO_button.setFixedSize(fixe_x, fixe_y)  # 设置打UFO按钮大小
+        self.UFO_button.setFont(number_font)  # 设置打UFO按钮字体
+        self.UFO_button.move(move_x + 3*a_x, move_y + a_y)  # 设置打UFO按钮位置
         self.UFO_button.setText('打UFO')
 
         self.Fireworks_button = QPushButton(self)  # 创建一个打烟花按钮
-        self.Fireworks_button.setFixedSize(100, 100)  # 设置确定按钮大小
-        self.Fireworks_button.setFont(number_font)  # 设置确定按钮字体
-        self.Fireworks_button.move(250, 100)  # 设置确定按钮位置
+        self.Fireworks_button.setFixedSize(fixe_x, fixe_y)  # 设置烟花按钮大小
+        self.Fireworks_button.setFont(number_font)  # 设置烟花按钮字体
+        self.Fireworks_button.move(move_x + 4*a_x, move_y)  # 设置烟花按钮位置
         self.Fireworks_button.setText('烟花')
 
-        self.determine_button.clicked.connect(self.number_text)  # 猜数字
+        self.YtlBlog_button.clicked.connect(self.ytl_blog)  # 打开YtlBlog博客
+        self.determine_button.clicked.connect(self.guess_number)  # 猜数字
         self.UFO_button.clicked.connect(RunGame.run_game)  # 打UFO游戏
         self.Fireworks_button.clicked.connect(game.fireworks_main)  # 烟花
 
-    def number_text(self):
-        a = self.input_number.text()
-        print(a)
-        if a:
-            if int(a) == 1:
-                QMessageBox.information(self, 'Successfully', '恭喜你答对了', QMessageBox.Yes | QMessageBox.No)
-            else:
-                QMessageBox.information(self, 'Failed', '很遗憾打错了', QMessageBox.Yes | QMessageBox.No)
-        else:
-            QMessageBox.information(self, 'Failed', '请输入数字', QMessageBox.Yes | QMessageBox.No)
+    def ytl_blog(self):
+        self.YtlBlog_win.show()
+
+    def guess_number(self):
+        self.guess_number_win.show()
 
     def closeEvent(self, event):
         """重写该方法主要是解决打开子窗口时，如果关闭了主窗口但子窗口仍显示的问题，使用sys.exit(0) 时就会只要关闭了主窗口，所有关联的子窗口也会全部关闭"""
