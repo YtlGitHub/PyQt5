@@ -9,11 +9,11 @@ class Database:
         self._database = db
         self.create_table()
 
-    @property
+    @property  # 通过 @property 装饰器，可以直接通过方法名来访问方法，不需要在方法名后添加一对“（）”小括号。需要注意的是，如果类中只包含该方法，那么 database 属性将是一个只读属性。也就是说，在使用 Database 类时，无法对 database 属性重新赋值，即运行代码会报错
     def database(self):
         return self._database
 
-    @database.setter
+    @database.setter  # 而要想实现修改 database 属性的值，还需要为 database 属性添加 setter 方法，就需要用到 setter 装饰器
     def database(self, db):
         self._database = db
 
@@ -107,7 +107,7 @@ class Database:
         connect.commit()
         connect.close()
 
-    @staticmethod
+    @staticmethod  # 使用staticmethod的代码, 用staticmethod包装的方法可以内部调用, 也可以通过类访问或类实例化访问。两个代码的区别后者是加了@staticmethod, 把方法checkind()放入类中，既有在类内调用，也可以在类外通过类来调用（不一定要实例化）
     def get_time():
         date = time.localtime()
         created_time = "{}-{}-{}-{}:{}:{}".format(date.tm_year, date.tm_mon,

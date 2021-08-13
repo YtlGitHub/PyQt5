@@ -3,14 +3,15 @@ from PyQt5.QtWidgets import QWidget, QApplication, QTableWidget, QAbstractItemVi
     QLineEdit, QPushButton, QHeaderView, QLabel, QCheckBox, QHBoxLayout
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
-from Database import Database
+from Database2 import Database2
 
 
-class AdminWindow(QWidget):
+class Admin2Window(QWidget):
     def __init__(self):
         super().__init__()
         self.table = QTableWidget(self)  # 添加表格对象
-        self.database = Database('./data.db')
+        # self.database = Database('./data2.db')
+        self.database2 = Database2()
         self.check_list = []  # 保存所有的选择框
         self.show_password_flag = False  # 是否显示原密码
         self.select_all_flag = False  # 是否选择全部
@@ -21,48 +22,62 @@ class AdminWindow(QWidget):
         self.main_window = widget
 
     def set_ui(self):
-        self.setWindowTitle("Management page")
+        self.setWindowTitle("Ytl的机型信息")
         self.setFixedSize(1200, 900)
         self.font = QFont("Consolas")
         self.setFont(self.font)
-        self.setWindowIcon(QIcon("./IMG/python-logo.png"))  # 设置图标
+        self.setWindowIcon(QIcon("./IMG/wanywn.png"))  # 设置图标
         self.add_table()  # 制定表格格式
-        self.get_all_user()  # 展示数据
-        self.add_line_edit()  # 制定输入框位置
         self.add_button()  # 添加按钮并绑定事件
+        self.add_line_edit()  # 制定输入框位置
 
     def add_table(self):
         """添加数据表格"""
-        self.table.setFixedWidth(1020)  # 设置宽度
+        self.table.setFixedWidth(1190)  # 设置宽度
         self.table.setFixedHeight(600)  # 设置高度
-        self.table.move(10, 30)  # 设置显示的位置
+        self.table.move(10, 10)  # 设置显示的位置
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)  # 自动填充
         self.table.horizontalHeader().setFont(self.font)  # 设置一下字体
         # self.table.setSelectionMode(QAbstractItemView.SingleSelection)  # 只能单选
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)  # 只能选择整行
-        self.table.setColumnCount(5)  # 设置列数
-        self.table.setHorizontalHeaderLabels(["Choice", "username", "password", 'created_time', 'user5'])  # 设置首行
+        self.table.setColumnCount(14)  # 设置列数
+        self.table.setHorizontalHeaderLabels(["Choice", "id", "id_name", "de", "brand", "pv", "OS", "m_name", "IMEI", "name", "user_name", "borrow_time", "still_time", "备注"])  # 设置首行
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 表格中的内容设置为无法修改
         self.table.verticalHeader().hide()  # 把序号隐藏
         self.table.setSortingEnabled(False)  # 自动排序
 
-    def get_all_user(self):
-        """获取所有的用户信息"""
-        data = self.database.read_table()  # 从数据库中获取用户信息，用户信息以 username, password, created_time 形式返回
+    def get_all_prototype(self):
+        """获取所有的机型信息"""
+        data = self.database2.read_table()  # 从数据库中获取用户信息，用户信息以 username, password, created_time 形式返回
+        for user in data:
+            self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
+
+    def set_select_prototype(self):
+        key = self.key_edit.text()
+        print(key)
+        value = self.value_edit.text()
+        print(value)
+        data = self.database2.select_prototype_info(key, value)
         print(data)
         for user in data:
-            print(user)
-            self.add_row(user[0], user[1], user[2])
+            self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
 
-    def add_row(self, username, password, created_time):
+    def add_row(self, id, id_name, de, brand, pv, OS, m_name, IMEI, name, user_name, borrow_time, still_time):
         """在表格上添加一行新的内容"""
         row = self.table.rowCount()  # 表格的行数
-        print(row)
         self.table.setRowCount(row + 1)  # 添加一行表格
-        self.table.setItem(row, 1, QTableWidgetItem(str(username)))  # 将用户信息插入到表格中
-        self.table.setItem(row, 2, QTableWidgetItem(str(password)))
-        self.table.setItem(row, 3, QTableWidgetItem(str(created_time)))
-        self.table.setItem(row, 4, QTableWidgetItem(str('user5')))
+        self.table.setItem(row, 1, QTableWidgetItem(str(id)))  # 将用户信息插入到表格中
+        self.table.setItem(row, 2, QTableWidgetItem(str(id_name)))
+        self.table.setItem(row, 3, QTableWidgetItem(str(de)))
+        self.table.setItem(row, 4, QTableWidgetItem(str(brand)))
+        self.table.setItem(row, 5, QTableWidgetItem(str(pv)))
+        self.table.setItem(row, 6, QTableWidgetItem(str(OS)))
+        self.table.setItem(row, 7, QTableWidgetItem(str(m_name)))
+        self.table.setItem(row, 8, QTableWidgetItem(str(IMEI)))
+        self.table.setItem(row, 9, QTableWidgetItem(str(name)))
+        self.table.setItem(row, 10, QTableWidgetItem(str(user_name)))
+        self.table.setItem(row, 11, QTableWidgetItem(str(borrow_time)))
+        self.table.setItem(row, 12, QTableWidgetItem(str(still_time)))
         # 设置复选框
         widget = QWidget()
         check = QCheckBox()
@@ -75,42 +90,54 @@ class AdminWindow(QWidget):
 
     def add_button(self):
         """添加界面上的按钮控件"""
+        move_x = 10
+        move_y = 620
         self.add_button_ = QPushButton(self)
-        self.add_button_.setText("Add")
-        self.add_button_.setToolTip("Add a new user with the username and password in the input box")
-        self.add_button_.move(1020, 700)
-        self.add_button_.clicked.connect(self.add_user)
+        self.add_button_.setText("All")
+        self.add_button_.setToolTip("展示所有数据")
+        self.add_button_.move(move_x, move_y)
+        self.add_button_.clicked.connect(self.get_all_prototype)
+
+        self.add_button_ = QPushButton(self)
+        self.add_button_.setText("select")
+        self.add_button_.setToolTip("查找数据")
+        self.add_button_.move(move_x+115, move_y+35)
+        self.add_button_.clicked.connect(self.set_select_prototype)
 
     def add_line_edit(self):
-        self.username_edit = QLineEdit(self)
-        self.username_edit.setFixedSize(240, 40)
-        self.username_edit.move(760, 700)
-        self.username_edit.setPlaceholderText('username')
+        move_x = 10
+        move_y = 655
+        fixe_x = 100
+        fixe_y = 30
+        self.key_edit = QLineEdit(self)
+        self.key_edit.setFixedSize(fixe_x, fixe_y)
+        self.key_edit.move(move_x, move_y)
+        self.key_edit.setPlaceholderText('key')
 
-        self.password_edit = QLineEdit(self)
-        self.password_edit.setFixedSize(240, 40)
-        self.password_edit.move(760, 760)
-        self.password_edit.setPlaceholderText('password')
-        self.password_edit.setEchoMode(QLineEdit.Password)
+        self.value_edit = QLineEdit(self)
+        self.value_edit.setFixedSize(fixe_x, fixe_y)
+        self.value_edit.move(move_x, move_y+40)
+        self.value_edit.setPlaceholderText('value')
+        # self.value_edit.setEchoMode(QLineEdit.Password)
 
-    def add_user(self):
-        """一行一行的添加数据"""
-        username = self.username_edit.text()
-        password = self.password_edit.text()
-        if all((username, password)):
-            flag = self.database.insert_table(username, password)
-            if flag:
-                QMessageBox.critical(self, 'Error', 'Already exists the username {}, please use another username'.format(username))
-            else:
-                self.add_row(username, password, self.database.get_time())
-            self.username_edit.setText('')  # 清空输入的用户信息
-            self.password_edit.setText('')
-        else:
-            QMessageBox.critical(self, 'Error', "Please fill in the blanks")
+    # def add_user(self):
+    #     """一行一行的添加数据"""
+    #     username = self.username_edit.text()
+    #     password = self.password_edit.text()
+    #     if all((username, password)):
+    #         flag = self.database.insert_table(username, password)
+    #         if flag:
+    #             QMessageBox.critical(self, 'Error', 'Already exists the username {}, please use another username'.format(username))
+    #         else:
+    #             self.add_row(username, password, self.database.get_time())
+    #         self.username_edit.setText('')  # 清空输入的用户信息
+    #         self.password_edit.setText('')
+    #     else:
+    #         QMessageBox.critical(self, 'Error', "Please fill in the blanks")
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    admin_window = AdminWindow()
+    admin_window = Admin2Window()
     admin_window.show()
     sys.exit(app.exec_())
