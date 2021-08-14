@@ -48,19 +48,21 @@ class Admin2Window(QWidget):
 
     def get_all_prototype(self):
         """获取所有的机型信息"""
+        self.delete_row()
         data = self.database2.read_table()  # 从数据库中获取用户信息，用户信息以 username, password, created_time 形式返回
         for user in data:
             self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
 
-    def set_select_prototype(self):
+    def get_select_prototype(self):
+        self.delete_row()
         key = self.key_edit.text()
-        print(key)
         value = self.value_edit.text()
-        print(value)
-        data = self.database2.select_prototype_info(key, value)
-        print(data)
-        for user in data:
-            self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
+        if all((key, value)):
+            data = self.database2.select_prototype_info(key, value)
+            for user in data:
+                self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
+        else:
+            QMessageBox.critical(self, 'Error', "Please fill in the blanks")
 
     def add_row(self, id, id_name, de, brand, pv, OS, m_name, IMEI, name, user_name, borrow_time, still_time):
         """在表格上添加一行新的内容"""
@@ -88,6 +90,11 @@ class Admin2Window(QWidget):
         widget.setLayout(check_lay)
         self.table.setCellWidget(row, 0, widget)
 
+    def delete_row(self):
+        row = self.table.rowCount()  # 表格的行数
+        for i in range(row):  # 去除所有行数
+            self.table.removeRow(row-i-1)  # removeRow(去除这一行)
+
     def add_button(self):
         """添加界面上的按钮控件"""
         move_x = 10
@@ -102,7 +109,12 @@ class Admin2Window(QWidget):
         self.add_button_.setText("select")
         self.add_button_.setToolTip("查找数据")
         self.add_button_.move(move_x+115, move_y+35)
-        self.add_button_.clicked.connect(self.set_select_prototype)
+        self.add_button_.clicked.connect(self.get_select_prototype)
+
+        # self.main_window_button.setFixedSize(200, 40)
+
+    def show_main_window(self):
+        self.main_window.show()
 
     def add_line_edit(self):
         move_x = 10
@@ -134,6 +146,14 @@ class Admin2Window(QWidget):
     #         self.password_edit.setText('')
     #     else:
     #         QMessageBox.critical(self, 'Error', "Please fill in the blanks")
+
+    def all_prototype_info(self):
+        """重新加载数据库并显示"""
+        self.table.clearContents()  # 清空表格的内容
+        self.check_list.clear()
+        self.table.setRowCount(0)  # 将表格的行数重置为0
+        self.database2.create_table()
+        self.get_all_prototype()
 
 
 if __name__ == '__main__':

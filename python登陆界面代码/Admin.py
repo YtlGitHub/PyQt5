@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QWidget, QApplication, QTableWidget, QAbstractItemVi
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
 from Database import Database
+from Main import Main
 
 
 class AdminWindow(QWidget):
@@ -20,6 +21,7 @@ class AdminWindow(QWidget):
         super().__init__()
         self.table = QTableWidget(self)  # 添加表格对象
         self.database = Database('./data.db')
+        self.main_win = Main()
         self.check_list = []  # 保存所有的选择框
         self.show_password_flag = False  # 是否显示原密码
         self.select_all_flag = False  # 是否选择全部
@@ -193,7 +195,7 @@ class AdminWindow(QWidget):
         self.main_window_button.setFixedSize(200, 40)
 
     def show_main_window(self):
-        self.main_window.show()
+        self.main_win.show()
 
     def delete_user(self):
         choose_list = []
@@ -213,9 +215,9 @@ class AdminWindow(QWidget):
         for i in choose_list:
             username = self.table.item(self.check_list.index(i), 1).text()
             self.database.delete_table_by_username(username)
-            self.table.removeRow(self.check_list.index(i))
-            self.check_list.remove(i)
-        self.database.create_table()
+            self.table.removeRow(self.check_list.index(i))  # removeRow(去除这一行)
+            self.check_list.remove(i)  # 检查列表。删除（i）
+        self.database.create_table()  # 创建表格
 
     def select_all(self):
         """选择是否选择全部"""
@@ -270,7 +272,7 @@ class AdminWindow(QWidget):
     def change_table(self, username, password):
         """更新表格"""
         find_flag = False
-        for row in range(self.table.rowCount()):
+        for row in range(self.table.rowCount()):  # range(范围) self.table.rowCount()(表格的行数)
             username_find = self.table.item(row, 1).text()
             if username_find == username:
                 self.table.item(row, 2).setText(password)
