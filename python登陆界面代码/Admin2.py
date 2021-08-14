@@ -23,7 +23,7 @@ class Admin2Window(QWidget):
 
     def set_ui(self):
         self.setWindowTitle("Ytl的机型信息")
-        self.setFixedSize(1200, 900)
+        self.setFixedSize(1600, 900)
         self.font = QFont("Consolas")
         self.setFont(self.font)
         self.setWindowIcon(QIcon("./IMG/wanywn.png"))  # 设置图标
@@ -33,34 +33,42 @@ class Admin2Window(QWidget):
 
     def add_table(self):
         """添加数据表格"""
-        self.table.setFixedWidth(1190)  # 设置宽度
+        self.table.setFixedWidth(1590)  # 设置宽度
         self.table.setFixedHeight(600)  # 设置高度
         self.table.move(10, 10)  # 设置显示的位置
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)  # 自动填充
         self.table.horizontalHeader().setFont(self.font)  # 设置一下字体
         # self.table.setSelectionMode(QAbstractItemView.SingleSelection)  # 只能单选
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)  # 只能选择整行
-        self.table.setColumnCount(14)  # 设置列数
-        self.table.setHorizontalHeaderLabels(["Choice", "id", "id_name", "de", "brand", "pv", "OS", "m_name", "IMEI", "name", "user_name", "borrow_time", "still_time", "备注"])  # 设置首行
+        self.table.setColumnCount(13)  # 设置列数
+        self.table.setHorizontalHeaderLabels(["Choice", "id", "id_name", "de", "brand", "pv", "OS", "m_name", "IMEI", "name", "user_name", "borrow_time", "still_time"])  # 设置首行
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 表格中的内容设置为无法修改
         self.table.verticalHeader().hide()  # 把序号隐藏
         self.table.setSortingEnabled(False)  # 自动排序
 
     def get_all_prototype(self):
         """获取所有的机型信息"""
-        self.delete_row()
+        self.table.setRowCount(0)  # 将表格的行数重置为0
         data = self.database2.read_table()  # 从数据库中获取用户信息，用户信息以 username, password, created_time 形式返回
         for user in data:
             self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
 
     def get_select_prototype(self):
-        self.delete_row()
+        self.table.setRowCount(0)  # 将表格的行数重置为0
         key = self.key_edit.text()
         value = self.value_edit.text()
         if all((key, value)):
-            data = self.database2.select_prototype_info(key, value)
-            for user in data:
-                self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
+            has_key = self.database2.is_has_key(key)
+            if has_key:
+                has_value = self.database2.is_has_value(key, value)
+                if has_value:
+                    data = self.database2.select_prototype_info(key, value)
+                    for user in data:
+                        self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
+                else:
+                    QMessageBox.critical(self, 'Error', "没有这个机型")
+            else:
+                QMessageBox.critical(self, 'Error', "没有这个字段")
         else:
             QMessageBox.critical(self, 'Error', "Please fill in the blanks")
 
@@ -90,10 +98,9 @@ class Admin2Window(QWidget):
         widget.setLayout(check_lay)
         self.table.setCellWidget(row, 0, widget)
 
-    def delete_row(self):
+    def delete_row(self, i):
         row = self.table.rowCount()  # 表格的行数
-        for i in range(row):  # 去除所有行数
-            self.table.removeRow(row-i-1)  # removeRow(去除这一行)
+        self.table.removeRow(i)  # removeRow(去除这一行)
 
     def add_button(self):
         """添加界面上的按钮控件"""

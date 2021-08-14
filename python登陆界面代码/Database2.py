@@ -40,10 +40,17 @@ class Database2:
         self.connect.commit()
         return data2
 
-    def is_has(self, value):
-        """判断数据库中是否包含id_name信息"""
-        sql = 'SELECT * FROM prototype_info WHERE id_name=?'
-        self.cursor.execute(sql, (value,))
+    def is_has_key(self, key):
+        """判断数据库中是否包含key信息"""
+        a = ['id','id_name','de','brand','pv','OS','m_name','IMEI','name','user_name','borrow_time','still_time']
+        if key in a:
+            return True
+        else:
+            return False
+
+    def is_has_value(self,key, value):
+        sql = f'SELECT * FROM prototype_info WHERE {key}="{value}"'
+        self.cursor.execute(sql)
         all_data = self.cursor.fetchall()
         self.connect.commit()
         if all_data:
@@ -62,5 +69,6 @@ class Database2:
 
 if __name__ == '__main__':
     data = Database2()
-    data_ = data.select_prototype_info("id", 2)
+    data_ = data.select_prototype_info("pv", 8)
+    data.is_has("pv", 8)
     print(data_)
