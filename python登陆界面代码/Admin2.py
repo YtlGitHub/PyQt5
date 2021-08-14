@@ -55,14 +55,14 @@ class Admin2Window(QWidget):
 
     def get_select_prototype(self):
         self.table.setRowCount(0)  # 将表格的行数重置为0
-        key = self.key_edit.text()
-        value = self.value_edit.text()
-        if all((key, value)):
-            has_key = self.database2.is_has_key(key)
+        key = self.key_edit.text()  # 获取输入框文本
+        value = self.value_edit.text()  # 获取输入框文本
+        if all((key, value)):  # 判断是否有输入文本，有输入就往下走，没有输入就提示，输入框为空
+            has_key = self.database2.is_has_key(key)  # 判断是否有这个字段，有就往下走，没有就提示，没有这个字段
             if has_key:
-                has_value = self.database2.is_has_value(key, value)
+                has_value = self.database2.is_has_value(key, value)  # 判断是否有这个字段的值，有就往下走，没有就提示没有这个值
                 if has_value:
-                    data = self.database2.select_prototype_info(key, value)
+                    data = self.database2.select_prototype_info(key, value)  # 查询元素
                     for user in data:
                         self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
                 else:
@@ -70,7 +70,7 @@ class Admin2Window(QWidget):
             else:
                 QMessageBox.critical(self, 'Error', "没有这个字段")
         else:
-            QMessageBox.critical(self, 'Error', "Please fill in the blanks")
+            QMessageBox.critical(self, 'Error', "key/values值为空")
 
     def add_row(self, id, id_name, de, brand, pv, OS, m_name, IMEI, name, user_name, borrow_time, still_time):
         """在表格上添加一行新的内容"""

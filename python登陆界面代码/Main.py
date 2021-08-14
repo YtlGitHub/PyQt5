@@ -16,7 +16,6 @@ class Main(QMainWindow):
         self.setFixedSize(1200, 700)
         self.setFont(QFont('Consolas'))
         a = random.randint(0, 6)
-        print(a)
         self.setStyleSheet(f"background-image: url('./IMG/{a}.jpg'); background-repeat: no repeat")
         # self.setWindowOpacity(0.9)
         self.YtlBlog_win = YtlBlog()

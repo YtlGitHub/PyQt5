@@ -8,7 +8,7 @@ class Database2:
     def __init__(self, db_host="192.168.43.136", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
         self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name,charset='utf8')  # 打开数据库连接
         self.cursor = self.connect.cursor()  # 获取操作游标
-        print('连接成功')
+        #print('连接成功')
         self.create_table()
         # self.insert_prototype_info()
         # self.connect.close()
@@ -70,5 +70,5 @@ class Database2:
 if __name__ == '__main__':
     data = Database2()
     data_ = data.select_prototype_info("pv", 8)
-    data.is_has("pv", 8)
+    data.is_has_value("pv", 8)
     print(data_)
