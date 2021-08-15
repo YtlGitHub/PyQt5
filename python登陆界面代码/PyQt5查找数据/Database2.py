@@ -6,7 +6,7 @@ import pymysql
 class Database2:
     """为登录界面所提供数据库操作的类"""
     def __init__(self, db_host="192.168.43.136", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
-        self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name,charset='utf8')  # 打开数据库连接
+        self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name, charset='utf8')  # 打开数据库连接
         self.cursor = self.connect.cursor()  # 获取操作游标
         #print('连接成功')
         self.create_table()
@@ -42,13 +42,13 @@ class Database2:
 
     def is_has_key(self, key):
         """判断数据库中是否包含key信息"""
-        a = ['id','id_name','de','brand','pv','OS','m_name','IMEI','name','user_name','borrow_time','still_time']
+        a = ['id','id_name','de','brand','pv','os','m_name','IMEI','name','user_name','borrow_time','still_time']
         if key in a:
             return True
         else:
             return False
 
-    def is_has_value(self,key, value):
+    def is_has_value(self, key, value):
         sql = f'SELECT * FROM prototype_info WHERE {key}="{value}"'
         self.cursor.execute(sql)
         all_data = self.cursor.fetchall()
@@ -62,13 +62,23 @@ class Database2:
         """指定条件查找数据"""
         sql = f'SELECT * FROM prototype_info WHERE {key}="{value}"'
         self.cursor.execute(sql)
-        data_id_name = self.cursor.fetchall()
+        data = self.cursor.fetchall()
         self.connect.commit()
-        return data_id_name
+        return data
+
+    def select_prototype_info_where(self, where):
+        """指定条件查找数据"""
+        sql = f'SELECT * FROM prototype_info WHERE {where}'
+        try:
+            self.cursor.execute(sql)
+            data = self.cursor.fetchall()
+            self.connect.commit()
+            return data
+        except:
+            return False
 
 
 if __name__ == '__main__':
     data = Database2()
-    data_ = data.select_prototype_info("pv", 8)
-    data.is_has_value("pv", 8)
+    data_ = data.select_prototype_info_where("id=1 or id1=2")
     print(data_)
