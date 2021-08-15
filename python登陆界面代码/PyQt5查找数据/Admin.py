@@ -34,7 +34,7 @@ class AdminWindow(QWidget):
     def set_ui(self):
         self.setWindowTitle("Management page")
         self.setFixedSize(1200, 900)
-        self.font = QFont("Consolas")
+        self.font = QFont("arail")
         self.setFont(self.font)
         self.setWindowIcon(QIcon("./IMG/python-logo.png"))  # 设置图标
         self.add_table()  # 添加数据表格

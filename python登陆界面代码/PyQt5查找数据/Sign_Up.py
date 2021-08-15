@@ -30,7 +30,7 @@ class SignWindow(QWidget):
         """添加相应的标签"""
         # 设置文本的字体
         label_font = QFont()
-        label_font.setFamily('Consolas')
+        label_font.setFamily('arial')
         label_font.setPixelSize(35)
 
         # 创建三个对应的标签，父窗口为 self
@@ -69,7 +69,7 @@ class SignWindow(QWidget):
     def add_line_edit(self):
         """添加输入框"""
         line_edit_font = QFont()
-        line_edit_font.setFamily('Consolas')
+        line_edit_font.setFamily('arial')
         line_edit_font.setPixelSize(30)
 
         # 创建三个输入框，父窗口为 self
@@ -104,7 +104,7 @@ class SignWindow(QWidget):
     def add_button(self):
         """添加按钮"""
         button_font = QFont()
-        button_font.setFamily('Consolas')
+        button_font.setFamily('arial')
         button_font.setPixelSize(30)
 
         self.sign_button = QPushButton(self)

@@ -24,7 +24,7 @@ class PrototypeRegisterWindow(QWidget):
     def set_ui(self):
         self.setWindowTitle("YTL的机型信息")
         self.setFixedSize(1600, 900)
-        self.font = QFont("Consolas")
+        self.font = QFont("arial")
         self.setFont(self.font)
         self.setWindowIcon(QIcon("./IMG/wanywn.png"))  # 设置图标
         self.add_table()  # 制定表格格式

@@ -47,7 +47,7 @@ class MyWindow(QMainWindow):
         # 我们来设置以下字体，利用 QFont对象来创建一个字体对象，然后使用QLabel对象的setFont方法进行设置
         # 设置字体
         label_font = QFont()  # QFont中的方法3：
-        label_font.setFamily('Consolas')  # setFamily -> 设置字体
+        label_font.setFamily('arial')  # setFamily -> 设置字体
         label_font.setPixelSize(35)  # setPixelSize -> 设置字体大小
 
         self.username_label = QLabel(self)  # 在上述代码中，我们首先定义了一个QLabel对象，然后使用其中的方法3

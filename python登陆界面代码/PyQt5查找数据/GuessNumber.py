@@ -9,7 +9,7 @@ class GuessNumber(QMainWindow):
         self.setWindowTitle('猜游戏')
         self.setWindowIcon(QIcon('./IMG/en.jpg'))
         self.setFixedSize(640, 320)
-        self.setFont(QFont('Consolas'))
+        self.setFont(QFont('arial'))
         self.setStyleSheet("background-image: url('./IMG/featureimages/0.jpg'); background-repeat: no repeat")
         self.set_ui()
         self.a = random.randint(0,10)
@@ -19,7 +19,7 @@ class GuessNumber(QMainWindow):
 
     def guess_number(self):
         number_font = QFont()
-        number_font.setFamily('Consolas')
+        number_font.setFamily('arial')
         number_font.setPixelSize(15)
 
         self.input_number = QLineEdit(self)  # 创建一个输入框

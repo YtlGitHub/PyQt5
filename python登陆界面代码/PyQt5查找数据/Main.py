@@ -12,7 +12,7 @@ class Main(QMainWindow):
         self.setWindowTitle('Main page')
         self.setWindowIcon(QIcon('./IMG/logo.png'))
         self.setFixedSize(1200, 700)
-        self.setFont(QFont('Consolas'))
+        self.setFont(QFont('arial'))
         a = random.randint(0, 6)
         self.setStyleSheet(f"background-image: url('./IMG/{a}.jpg'); background-repeat: no repeat")
         # self.setWindowOpacity(0.9)
@@ -25,7 +25,7 @@ class Main(QMainWindow):
 
     def number(self):
         number_font = QFont()
-        number_font.setFamily('Consolas')
+        number_font.setFamily('arial')
         number_font.setPixelSize(30)
         fixe_x = 100
         fixe_y = 100
