@@ -5,7 +5,7 @@ import pymysql
 
 class Database2:
     """为登录界面所提供数据库操作的类"""
-    def __init__(self, db_host="192.168.43.136", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
+    def __init__(self, db_host="10.127.56.173", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
         self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name,charset='utf8')  # 打开数据库连接
         self.cursor = self.connect.cursor()  # 获取操作游标
         #print('连接成功')

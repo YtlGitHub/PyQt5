@@ -36,7 +36,9 @@ class PrototypeRegisterWindow(QWidget):
         # self.table.setSelectionMode(QAbstractItemView.SingleSelection)  # 只能单选
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)  # 只能选择整行
         self.table.setColumnCount(13)  # 设置列数
-        self.table.setHorizontalHeaderLabels(["Choice", "id", "id_name", "de", "brand", "pv", "os", "m_name", "IMEI", "name", "user_name", "borrow_time", "still_time"])  # 设置首行
+        data_liat_field = self.database2.read_table_field()  # 调用Database2.read_table_field()自定义方法，读取表格的字段
+        data_liat_field.insert(0, "Choice")  # 在列表下标为0的地方插入”Choice“字段
+        self.table.setHorizontalHeaderLabels(data_liat_field)  # 设置首行字段
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 表格中的内容设置为无法修改
         self.table.verticalHeader().hide()  # 把序号隐藏
         self.table.setSortingEnabled(False)  # 自动排序
@@ -87,9 +89,8 @@ class PrototypeRegisterWindow(QWidget):
     def get_all_prototype(self):
         """获取所有的机型信息"""
         self.table.setRowCount(0)  # 将表格的行数重置为0
-        data = self.database2.read_table()  # 从数据库中获取用户信息，用户信息以 username, password, created_time 形式返回
-        for user in data:
-            self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
+        data_all = self.database2.read_table()  # 调用Database2.read_table自定义方法，读取表格里面的所有数据
+        self.add_row(data_all)
 
     def get_select_prototype(self):
         key = self.key_edit.text()  # 获取输入框文本
@@ -100,9 +101,8 @@ class PrototypeRegisterWindow(QWidget):
                 has_value = self.database2.is_has_value(key, value)  # 判断是否有这个字段的值，有就往下走，没有就提示没有这个值
                 if has_value:
                     self.table.setRowCount(0)  # 将表格的行数重置为0
-                    data = self.database2.select_prototype_info(key, value)  # 查询元素
-                    for user in data:
-                        self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
+                    data_select = self.database2.select_prototype_info(key, value)  # 查询元素
+                    self.add_row(data_select)
                 else:
                     QMessageBox.critical(self, 'Error', "没有这个机型")
             else:
@@ -113,41 +113,31 @@ class PrototypeRegisterWindow(QWidget):
     def get_select_prototype_where(self):
         where = self.where_edit.text()  # 获取输入的条件查询文本
         if where:
-            data = self.database2.select_prototype_info_where(where)
-            if data:
+            data_where = self.database2.select_prototype_info_where(where)
+            if data_where:
                 self.table.setRowCount(0)  # 将表格的行数重置为0
-                for user in data:
-                    self.add_row(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10], user[11])
+                self.add_row(data_where)
             else:
                 QMessageBox.critical(self, 'Error', "sql条件语法有误")
         else:
             QMessageBox.critical(self, 'Error', "where输入框为空")
 
-    def add_row(self, id, id_name, de, brand, pv, os, m_name, IMEI, name, user_name, borrow_time, still_time):
+    def add_row(self,data):
         """在表格上添加一行新的内容"""
-        row = self.table.rowCount()  # 表格的行数
-        self.table.setRowCount(row + 1)  # 添加一行表格
-        self.table.setItem(row, 1, QTableWidgetItem(str(id)))  # 将用户信息插入到表格中
-        self.table.setItem(row, 2, QTableWidgetItem(str(id_name)))
-        self.table.setItem(row, 3, QTableWidgetItem(str(de)))
-        self.table.setItem(row, 4, QTableWidgetItem(str(brand)))
-        self.table.setItem(row, 5, QTableWidgetItem(str(pv)))
-        self.table.setItem(row, 6, QTableWidgetItem(str(os)))
-        self.table.setItem(row, 7, QTableWidgetItem(str(m_name)))
-        self.table.setItem(row, 8, QTableWidgetItem(str(IMEI)))
-        self.table.setItem(row, 9, QTableWidgetItem(str(name)))
-        self.table.setItem(row, 10, QTableWidgetItem(str(user_name)))
-        self.table.setItem(row, 11, QTableWidgetItem(str(borrow_time)))
-        self.table.setItem(row, 12, QTableWidgetItem(str(still_time)))
-        # 设置复选框
-        widget = QWidget()
-        check = QCheckBox()
-        self.check_list.append(check)  # 添加到复选框列表中
-        check_lay = QHBoxLayout()
-        check_lay.addWidget(check)
-        check_lay.setAlignment(Qt.AlignCenter)
-        widget.setLayout(check_lay)
-        self.table.setCellWidget(row, 0, widget)
+        for i in data:
+            row = self.table.rowCount()  # 表格的行数
+            self.table.setRowCount(row + 1)  # 添加一行表格
+            # 设置复选框
+            widget = QWidget()
+            check = QCheckBox()
+            self.check_list.append(check)  # 添加到复选框列表中
+            check_lay = QHBoxLayout()
+            check_lay.addWidget(check)
+            check_lay.setAlignment(Qt.AlignCenter)
+            widget.setLayout(check_lay)
+            self.table.setCellWidget(row, 0, widget)
+            for j in range(len(i)):
+                self.table.setItem(row, j+1, QTableWidgetItem(str(i[j])))  # 将用户信息插入到表格中
 
 # =================================================================
 

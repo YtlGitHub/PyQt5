@@ -5,7 +5,7 @@ import pymysql
 
 class Database2:
     """为登录界面所提供数据库操作的类"""
-    def __init__(self, db_host="192.168.43.136", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
+    def __init__(self, db_host="10.127.56.173", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
         self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name, charset='utf8')  # 打开数据库连接
         self.cursor = self.connect.cursor()  # 获取操作游标
         #print('连接成功')
@@ -36,19 +36,30 @@ class Database2:
         """读取数据库中的所有元素"""
         sql = 'SELECT * FROM prototype_info'
         self.cursor.execute(sql)
-        data2 = self.cursor.fetchall()
+        data_all = self.cursor.fetchall()
         self.connect.commit()
-        return data2
+        return data_all
+
+    def read_table_field(self):
+        """读取表格字段"""
+        sql = "select COLUMN_NAME from information_schema.COLUMNS where table_name = 'prototype_info';"
+        self.cursor.execute(sql)
+        data = self.cursor.fetchall()
+        data_list_field = []
+        for i in range(len(data)):
+            data_list_field.append(data[i][0])
+        return data_list_field
 
     def is_has_key(self, key):
         """判断数据库中是否包含key信息"""
-        a = ['id','id_name','de','brand','pv','os','m_name','IMEI','name','user_name','borrow_time','still_time']
-        if key in a:
+        data_list_field = self.read_table_field()
+        if key in data_list_field:
             return True
         else:
             return False
 
     def is_has_value(self, key, value):
+        """查找是否有这个值"""
         sql = f'SELECT * FROM prototype_info WHERE {key}="{value}"'
         self.cursor.execute(sql)
         all_data = self.cursor.fetchall()
@@ -80,5 +91,5 @@ class Database2:
 
 if __name__ == '__main__':
     data = Database2()
-    data_ = data.select_prototype_info_where("id=1 or id1=2")
+    data_ = data.read_table_field()
     print(data_)
