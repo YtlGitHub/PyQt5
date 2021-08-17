@@ -7,11 +7,13 @@ class Database2:
     """为登录界面所提供数据库操作的类"""
     db_host_gs = "10.127.56.173"
     db_host_jia = "192.168.43.136"
+    db_host = db_host_jia
 
     def __init__(self, db_host="10.127.56.173", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
+        print(db_host)
         self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name, charset='utf8')  # 打开数据库连接
         self.cursor = self.connect.cursor()  # 获取操作游标
-        #print('连接成功')
+        # print('连接成功')
         self.create_table()
         # self.insert_prototype_info()
         # self.connect.close()
@@ -24,26 +26,21 @@ class Database2:
     def database(self, db):
         self._database = db
 
-    def create_table(self):  # 没有这个表就创建一个
+    def create_table(self):  # 创建表
         sql = "create table if not exists prototype_info(id int, id_name int, de varchar(255), brand varchar(255), pv int, OS varchar(255), m_name varchar(255), IMEI int, name varchar(255), user_name varchar(255), borrow_time date, still_time date)"
         self.cursor.execute(sql)
         self.connect.commit()
         #self.connect.close()
 
-    def insert_prototype_info(self):
-        sql = "insert into prototype_info values(3,199,'内销','OPPO',11,'V11','OPPO123',123456,'杨天龙','杨天龙','2021/8/14','2021/8/14')"
-        self.cursor.execute(sql)
-        self.connect.commit()
+    def insert_prototype_info(self, sql):  # 插入数据,sql语句自己写
+        try:
+            self.cursor.execute(sql)
+            self.connect.commit()
+            return True
+        except:
+            return False
 
-    def read_table(self):
-        """读取数据库中的所有元素"""
-        sql = 'SELECT * FROM prototype_info'
-        self.cursor.execute(sql)
-        data_all = self.cursor.fetchall()
-        self.connect.commit()
-        return data_all
-
-    def read_table_field(self):
+    def read_table_field(self):  # 读取表里面元素的字段
         """读取表格字段"""
         sql = "select COLUMN_NAME from information_schema.COLUMNS where table_name = 'prototype_info';"
         self.cursor.execute(sql)
@@ -52,6 +49,14 @@ class Database2:
         for i in range(len(data)):
             data_list_field.append(data[i][0])
         return data_list_field
+
+    def read_table(self):
+        """读取数据库中的所有元素"""
+        sql = 'SELECT * FROM prototype_info'
+        self.cursor.execute(sql)
+        data_all = self.cursor.fetchall()
+        self.connect.commit()
+        return data_all
 
     def is_has_key(self, key):
         """判断数据库中是否包含key信息"""
@@ -91,8 +96,31 @@ class Database2:
         except:
             return False
 
+    def update_prototype_info(self, field, value, id_):
+        """修改数据"""
+        try:
+            sql = f'update prototype_info set {field}="{value}" where id = {id_}'
+            self.cursor.execute(sql)
+            self.connect.commit()
+            return True
+        except:
+            return False
+
+    def delete_prototype_info(self, id_):
+        """修改数据"""
+        try:
+            sql = f'delete from prototype_info where id = {id_}'
+            self.cursor.execute(sql)
+            self.connect.commit()
+            return True
+        except:
+            return False
+
 
 if __name__ == '__main__':
     data = Database2()
-    data_ = data.read_table_field()
+    # data_field = data.read_table_field()  # 获取字段
+    #print(data_field)
+    data.update_prototype_info('user_name','杨天龙',1)
+    data_ = data.read_table()  # 读取所有数据
     print(data_)

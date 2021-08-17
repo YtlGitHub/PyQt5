@@ -9,6 +9,7 @@ from Database import Database
 from Main import Main
 from Admin import AdminWindow
 from PrototypeRegister import PrototypeRegisterWindow
+from AdminPrototypeRegister import AdminPrototypeRegisterWindow
 
 
 class MyWindow(QMainWindow):
@@ -17,6 +18,7 @@ class MyWindow(QMainWindow):
         self.icon = QIcon("./IMG/logo.png")  # 图标
         self.database = Database('./data.db')  # 数据路径
         self.admin_win = AdminWindow()  # 创建管理员界面
+        self.admin_prototype_register_Win = AdminPrototypeRegisterWindow()  # 创建管理员mysql修改增加界面
         self.prototype_register_win = PrototypeRegisterWindow()  # 创建数据查询界面
         self.sign_up_win = SignWindow()  # 创建的注册窗口
         self.main_win = Main()  # 登入后的主页面
@@ -139,10 +141,12 @@ class MyWindow(QMainWindow):
                     self.close()
                     if username == 'admin':  # 如果是管理员，进入管理界面
                         self.admin_win.show()
-                    elif username == 'admin2':
+                    elif username == 'admin2':  # 如果是游戏管理员，进入游戏管理界面
                         self.main_win.show()
+                    elif username == 'adminmysql':  # 如果是管理员mysql，进入mysql管理界面
+                        self.admin_prototype_register_Win.show()
                     else:
-                        self.prototype_register_win.show()  # 否则进入客户管理界面
+                        self.prototype_register_win.show()  # 否则进入客户mysql管理界面
                 else:
                     QMessageBox.information(self, 'Failed', 'Password is wrong, try again', QMessageBox.Yes | QMessageBox.No)
             else:
