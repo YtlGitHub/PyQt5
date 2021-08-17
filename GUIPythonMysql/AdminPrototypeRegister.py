@@ -132,14 +132,14 @@ class AdminPrototypeRegisterWindow(QWidget):
 
     def add_label(self):
         """添加界面上的标签控件"""
-        fixe_x = 100
+        fixe_x = 200
         fixe_y = 30
         move_x = 10
         move_y = 0
         self.username_label = QLabel(self)
         self.username_label.setFixedSize(fixe_x, fixe_y)
         self.username_label.move(move_x, move_y)
-        self.username_label.setText('欢迎来到YTLMySQL')
+        self.username_label.setText('欢迎进入YTLMySQL系统')
 
     def get_all_prototype(self):
         """获取所有的机型信息"""
@@ -204,7 +204,8 @@ class AdminPrototypeRegisterWindow(QWidget):
     def delete_prototype(self):
         delete_id = self.delete_edit.text()  # 获取删除输入框的id
         if delete_id:
-            delete_data = self.database2.update_prototype_info(delete_id)
+            print(delete_id)
+            delete_data = self.database2.delete_prototype_info(delete_id)
             if delete_data:
                 self.get_all_prototype()
             else:

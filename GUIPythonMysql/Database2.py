@@ -9,7 +9,7 @@ class Database2:
     db_host_jia = "192.168.43.136"
     db_host = db_host_jia
 
-    def __init__(self, db_host="10.127.56.173", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
+    def __init__(self, db_host="192.168.43.136", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
         print(db_host)
         self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name, charset='utf8')  # 打开数据库连接
         self.cursor = self.connect.cursor()  # 获取操作游标
@@ -50,9 +50,9 @@ class Database2:
             data_list_field.append(data[i][0])
         return data_list_field
 
-    def read_table(self):
+    def read_table(self, table_name='prototype_info'):
         """读取数据库中的所有元素"""
-        sql = 'SELECT * FROM prototype_info'
+        sql = f'SELECT * FROM {table_name}'
         self.cursor.execute(sql)
         data_all = self.cursor.fetchall()
         self.connect.commit()
@@ -121,6 +121,5 @@ if __name__ == '__main__':
     data = Database2()
     # data_field = data.read_table_field()  # 获取字段
     #print(data_field)
-    data.update_prototype_info('user_name','杨天龙',1)
     data_ = data.read_table()  # 读取所有数据
     print(data_)
