@@ -20,7 +20,7 @@ class AdminPrototypeRegisterWindow(QWidget):
         self.setFixedSize(1600, 900)
         self.font = QFont("arial")
         self.setFont(self.font)
-        self.setWindowIcon(QIcon("./IMG/wanywn.png"))  # 设置图标
+        self.setWindowIcon(QIcon("IMG/wanywn.png"))  # 设置图标
         self.add_label()  # 添加界面上的标签控件
         self.add_table()  # 制定表格格式
         self.add_button()  # 添加按钮并绑定事件
