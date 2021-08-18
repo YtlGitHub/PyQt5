@@ -148,16 +148,15 @@ class AdminPrototypeRegisterWindow(QWidget):
         self.add_row(data_all)
 
     def get_select_prototype(self):
-        key = self.key_edit.text()  # 获取输入框文本
+        field = self.key_edit.text()  # 获取输入框文本
         value = self.value_edit.text()  # 获取输入框文本
-        if all((key, value)):  # 判断是否有输入文本，有输入就往下走，没有输入就提示，输入框为空
-            has_key = self.database2.is_has_key(key)  # 判断是否有这个字段，有就往下走，没有就提示，没有这个字段
-            if has_key:
-                has_value = self.database2.is_has_value(key, value)  # 判断是否有这个字段的值，有就往下走，没有就提示没有这个值
+        if all((field, value)):  # 判断是否有输入文本，有输入就往下走，没有输入就提示，输入框为空
+            has_field = self.database2.is_has_key(field)  # 判断是否有这个字段，有就往下走，没有就提示，没有这个字段
+            if has_field:
+                has_value = self.database2.is_has_value(field, value)  # 判断是否有这个字段的值，有就往下走，没有就提示没有这个值
                 if has_value:
                     self.table.setRowCount(0)  # 将表格的行数重置为0
-                    data_select = self.database2.select_prototype_info(key, value)  # 查询元素
-                    self.add_row(data_select)
+                    self.add_row(has_value)
                 else:
                     QMessageBox.critical(self, 'Error', "没有这个机型")
             else:

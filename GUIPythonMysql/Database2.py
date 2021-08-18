@@ -27,10 +27,28 @@ class Database2:
         self._database = db
 
     def create_table(self):  # 创建表
-        sql = "create table if not exists prototype_info(id int, id_name int, de varchar(255), brand varchar(255), pv int, OS varchar(255), m_name varchar(255), IMEI int, name varchar(255), user_name varchar(255), borrow_time date, still_time date)"
+        sql = "CREATE TABLE IF NOT EXISTS AdminData(username TEXT, password TEXT, created_time TEXT)"
         self.cursor.execute(sql)
+        if not self.is_has_admin('admin'):  #
+            created_time = self.get_time()  # 设置当前添加的时间
+            default = f"insert into AdminData(username, password, created_time) values('admin', 'admin123', '{created_time}')"
+            self.cursor.execute(default)
+        if not self.is_has_admin('ytl123'):  #
+            created_time = self.get_time()  # 设置当前添加的时间
+            default3 = f"insert into AdminData(username, password, created_time) values('ytl123', '123456', '{created_time}')"
+            self.cursor.execute(default3)
         self.connect.commit()
         #self.connect.close()
+
+    def clear(self):  # 删除表里面的所有数据
+        sql = "DELETE FROM AdminData"
+        self.cursor.execute(sql)
+        self.connect.commit()
+
+    def update_table(self, username, password):
+        sql = f"UPDATE AdminData SET password='{password}' WHERE username='{username}'"
+        self.cursor.execute(sql)
+        self.connect.commit()
 
     def insert_prototype_info(self, sql):  # 插入数据,sql语句自己写
         try:
@@ -58,32 +76,44 @@ class Database2:
         self.connect.commit()
         return data_all
 
-    def is_has_key(self, key):
-        """判断数据库中是否包含key信息"""
+    def is_has_key(self, field):
+        """判断数据库中是否包含field字段信息"""
         data_list_field = self.read_table_field()
-        if key in data_list_field:
+        if field in data_list_field:
             return True
         else:
             return False
+
+    def is_has_admin(self, username):
+        """查找是否有这个用户"""
+        sql = f'SELECT * FROM AdminData WHERE username="{username}"'
+        self.cursor.execute(sql)
+        all_data = self.cursor.fetchall()
+        return all_data
+
+    def insert_table(self, username, password):  # 添加管理员用户账户和密码
+        if self.is_has_admin(username):  # 先判断是否已有该用户
+            return True  # 如已经有该用户的时候返回一个 True 提供外界接口
+        else:  # 如没有就添加用户
+            created_time = self.get_time()  # 设置当前添加的时间
+            sql = f"insert into AdminData(username, password, created_time) values('{username}', '{password}', '{created_time}')"
+            self.cursor.execute(sql)
+            self.connect.commit()
+
+    def delete_table_by_username(self, username):  # 根据用户名来删除用户
+        sql = f"delete from AdminData where username='{username}'"
+        self.cursor.execute(sql)
+        self.connect.commit()
 
     def is_has_value(self, key, value):
         """查找是否有这个值"""
         sql = f'SELECT * FROM prototype_info WHERE {key}="{value}"'
-        self.cursor.execute(sql)
-        all_data = self.cursor.fetchall()
-        self.connect.commit()
-        if all_data:
-            return True
-        else:
+        try:
+            self.cursor.execute(sql)
+            all_data = self.cursor.fetchall()
+            return all_data
+        except:
             return False
-
-    def select_prototype_info(self, key, value):
-        """指定条件查找数据"""
-        sql = f'SELECT * FROM prototype_info WHERE {key}="{value}"'
-        self.cursor.execute(sql)
-        data = self.cursor.fetchall()
-        self.connect.commit()
-        return data
 
     def select_prototype_info_where(self, where):
         """指定条件查找数据"""
@@ -116,10 +146,17 @@ class Database2:
         except:
             return False
 
+    @staticmethod  # 使用staticmethod的代码, 用staticmethod包装的方法可以内部调用, 也可以通过类访问或类实例化访问。两个代码的区别后者是加了@staticmethod, 把方法checkind()放入类中，既有在类内调用，也可以在类外通过类来调用（不一定要实例化）
+    def get_time():
+        date = time.localtime()
+        created_time = "{}-{}-{}-{}:{}:{}".format(date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec)
+        return created_time
+
 
 if __name__ == '__main__':
     data = Database2()
     # data_field = data.read_table_field()  # 获取字段
     #print(data_field)
+    # data.insert_table('user', '123456')
     data_ = data.read_table()  # 读取所有数据
     print(data_)

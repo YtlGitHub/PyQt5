@@ -55,9 +55,9 @@ class Main(QMainWindow):
     def guess_number(self):
         self.guess_number_win.show()
 
-    def closeEvent(self, event):
-        """重写该方法主要是解决打开子窗口时，如果关闭了主窗口但子窗口仍显示的问题，使用sys.exit(0) 时就会只要关闭了主窗口，所有关联的子窗口也会全部关闭"""
-        sys.exit(0)  # 关闭登录窗口的时候，注册窗口也应该关闭
+    # def closeEvent(self, event):
+    #     """重写该方法主要是解决打开子窗口时，如果关闭了主窗口但子窗口仍显示的问题，使用sys.exit(0) 时就会只要关闭了主窗口，所有关联的子窗口也会全部关闭"""
+    #     sys.exit(0)  # 关闭登录窗口的时候，注册窗口也应该关闭
 
 
 if __name__ == '__main__':

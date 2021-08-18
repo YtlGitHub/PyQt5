@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QApplication, QTableWidget, QAbstractItemVi
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
 from Database2 import Database2
+from GameMain import Main
 
 
 class PrototypeRegisterWindow(QWidget):
@@ -12,6 +13,7 @@ class PrototypeRegisterWindow(QWidget):
         self.table = QTableWidget(self)  # 添加表格对象
         # self.database = Database('./data2.db')
         self.database2 = Database2()
+        self.game_win = Main()  # 调用自定义的GameMain游戏界面类
         self.check_list = []  # 保存所有的选择框
         self.set_ui()
 
@@ -86,6 +88,15 @@ class PrototypeRegisterWindow(QWidget):
         self.add_button_.move(move_x + 415, move_y + 135)
         self.add_button_.clicked.connect(self.get_select_prototype_where)
 
+        self.add_button_ = QPushButton(self)
+        self.add_button_.setText("Game")
+        self.add_button_.setToolTip("点击进入小游戏界面")
+        self.add_button_.move(1500, 850)
+        self.add_button_.clicked.connect(self.game_win_window)
+
+    def game_win_window(self):
+        self.game_win.show()
+
     def get_all_prototype(self):
         """获取所有的机型信息"""
         self.table.setRowCount(0)  # 将表格的行数重置为0
@@ -93,16 +104,15 @@ class PrototypeRegisterWindow(QWidget):
         self.add_row(data_all)
 
     def get_select_prototype(self):
-        key = self.key_edit.text()  # 获取输入框文本
+        field = self.key_edit.text()  # 获取输入框文本
         value = self.value_edit.text()  # 获取输入框文本
-        if all((key, value)):  # 判断是否有输入文本，有输入就往下走，没有输入就提示，输入框为空
-            has_key = self.database2.is_has_key(key)  # 判断是否有这个字段，有就往下走，没有就提示，没有这个字段
-            if has_key:
-                has_value = self.database2.is_has_value(key, value)  # 判断是否有这个字段的值，有就往下走，没有就提示没有这个值
+        if all((field, value)):  # 判断是否有输入文本，有输入就往下走，没有输入就提示，输入框为空
+            has_field = self.database2.is_has_key(field)  # 判断是否有这个字段，有就往下走，没有就提示，没有这个字段
+            if has_field:
+                has_value = self.database2.is_has_value(field, value)  # 判断是否有这个字段的值，有就往下走，没有就提示没有这个值
                 if has_value:
                     self.table.setRowCount(0)  # 将表格的行数重置为0
-                    data_select = self.database2.select_prototype_info(key, value)  # 查询元素
-                    self.add_row(data_select)
+                    self.add_row(has_value)
                 else:
                     QMessageBox.critical(self, 'Error', "没有这个机型")
             else:

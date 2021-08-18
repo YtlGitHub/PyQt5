@@ -88,7 +88,7 @@ class Database:
         """判断数据库中是否包含用户名信息"""
         connect = sqlite3.connect(self._database)
         cursor = connect.cursor()
-        sql = 'SELECT * FROM data WHERE username=?'
+        sql = 'SELECT * FROM Data WHERE username=?'
         result = cursor.execute(sql, (username,))
         connect.commit()
         all_data = result.fetchall()

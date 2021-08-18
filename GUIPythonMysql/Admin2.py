@@ -14,14 +14,18 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
 from Database2 import Database2
 from PrototypeRegister import PrototypeRegisterWindow
+from AdminPrototypeRegister import AdminPrototypeRegisterWindow
+from GameMain import Main
 
 
-class AdminWindow(QWidget):
+class AdminWindow2(QWidget):
     def __init__(self):
         super().__init__()
         self.table = QTableWidget(self)  # 添加表格对象
         self.database2 = Database2()
-        self.prototype_register_win = PrototypeRegisterWindow()
+        self.prototype_register_win = PrototypeRegisterWindow()  # 导入客户数据查询
+        self.admin_prototype_register_win = AdminPrototypeRegisterWindow()  # 导入管理员数据查询比客户查询多增删改
+        self.game_win = Main()  # 登入后的主页面
         self.check_list = []  # 保存所有的选择框
         self.show_password_flag = False  # 是否显示原密码
         self.select_all_flag = False  # 是否选择全部
@@ -32,11 +36,11 @@ class AdminWindow(QWidget):
         self.main_window = widget
 
     def set_ui(self):
-        self.setWindowTitle("Management page")
+        self.setWindowTitle("AdminYTLMysql")
         self.setFixedSize(1200, 900)
-        self.font = QFont("arail")
+        self.font = QFont('arial')
         self.setFont(self.font)
-        self.setWindowIcon(QIcon("./IMG/python-logo.png"))  # 设置图标
+        self.setWindowIcon(QIcon("./IMG/wanywn.png"))  # 设置图标
         self.add_table()  # 添加数据表格
         self.get_all_user()  # add table 之后才有show
         self.add_line_edit()  # 添加输入框
@@ -60,26 +64,26 @@ class AdminWindow(QWidget):
 
     def get_all_user(self):
         """获取所有的用户信息"""
-        data = self.database.read_table()  # 从数据库中获取用户信息，用户信息以 username, password, created_time 形式返回
-        for user in data:
-            self.add_row(user[0], user[1], user[2])
+        self.table.setRowCount(0)  # 获取输入框文本
+        data = self.database2.read_table(table_name='AdminData')  # 从数据库中获取用户信息，用户信息以 username, password, created_time 形式返回
+        self.add_row(data)
 
-    def add_row(self, username, password, created_time):
-        """在表格上添加一行新的内容"""
-        row = self.table.rowCount()  # 表格的行数
-        self.table.setRowCount(row + 1)  # 添加一行表格
-        self.table.setItem(row, 1, QTableWidgetItem(str(username)))  # 将用户信息插入到表格中
-        self.table.setItem(row, 2, QTableWidgetItem(str(password)))
-        self.table.setItem(row, 3, QTableWidgetItem(str(created_time)))
-        # 设置复选框
-        widget = QWidget()
-        check = QCheckBox()
-        self.check_list.append(check)  # 添加到复选框列表中
-        check_lay = QHBoxLayout()
-        check_lay.addWidget(check)
-        check_lay.setAlignment(Qt.AlignCenter)
-        widget.setLayout(check_lay)
-        self.table.setCellWidget(row, 0, widget)
+    def add_row(self, data):
+        """在表格上添加N行新的内容"""
+        for i in data:
+            row = self.table.rowCount()  # 表格的行数
+            self.table.setRowCount(row + 1)  # 添加一行表格
+            # 设置复选框
+            widget = QWidget()
+            check = QCheckBox()
+            self.check_list.append(check)  # 添加到复选框列表中
+            check_lay = QHBoxLayout()
+            check_lay.addWidget(check)
+            check_lay.setAlignment(Qt.AlignCenter)
+            widget.setLayout(check_lay)
+            self.table.setCellWidget(row, 0, widget)
+            for j in range(len(i)):
+                self.table.setItem(row, j + 1, QTableWidgetItem(str(i[j])))  # 将用户信息插入到表格中
 
     def add_line_edit(self):
         self.username_edit = QLineEdit(self)
@@ -144,58 +148,75 @@ class AdminWindow(QWidget):
         self.update_button = QPushButton(self)
         self.add_button_ = QPushButton(self)
         self.show_password_button = QPushButton(self)
-        self.clear_button = QPushButton(self)
+        # self.clear_button = QPushButton(self)
         self.select_all_button = QPushButton(self)
         self.refresh_button = QPushButton(self)
         self.prototype_register_window_button = QPushButton(self)
+        self.admin_prototype_register_window_button = QPushButton(self)
+        self.game_window_button = QPushButton(self)
 
         # 设置按钮上的文本
         self.delete_button.setText("Delete")
         self.update_button.setText("Update")
         self.add_button_.setText("Add")
         self.show_password_button.setText("Show")
-        self.clear_button.setText("Clear")
+        # self.clear_button.setText("Clear")
         self.select_all_button.setText("Select All")
         self.refresh_button.setText("Refresh")
-        self.prototype_register_window_button.setText("prototype_register window")
+        self.prototype_register_window_button.setText("机型客户界面")
+        self.admin_prototype_register_window_button.setText("机型管理员界面")
+        self.game_window_button.setText("Game")
 
         # 在按钮上设置提示信息
         self.delete_button.setToolTip("Delete the selected user, you can choose multiple users")
-        self.clear_button.setToolTip("Clear all the users, including the super user, but the super user will be "
-                                     "created later by default")
+        # self.clear_button.setToolTip("Clear all the users, including the super user, but the super user will be created later by default")
         self.select_all_button.setToolTip("Select all the users, including the super user")
         self.show_password_button.setToolTip("Show or hide the password")
         self.add_button_.setToolTip("Add a new user with the username and password in the input box")
         self.update_button.setToolTip("Update the password with the chosen username")
         self.refresh_button.setToolTip("Click here to refresh the table")
-        self.prototype_register_window_button.setToolTip("展示查找数据")
+        self.prototype_register_window_button.setToolTip("点击进入机型客户界面")
+        self.admin_prototype_register_window_button.setToolTip("点击进入机型管理员界面")
+        self.game_window_button.setToolTip("点击进入游戏界面")
 
         # 控制位置
         self.delete_button.move(1040, 340)
         self.select_all_button.move(1040, 280)
-        self.clear_button.move(1040, 400)
+        # self.clear_button.move(1040, 400)
         self.refresh_button.move(1040, 460)
 
         self.update_button.move(430, 700)
         self.add_button_.move(1020, 700)
         self.show_password_button.move(1020, 750)
 
-        self.prototype_register_window_button.move(430, 820)
+        self.prototype_register_window_button.move(580, 820)
+        self.admin_prototype_register_window_button.move(330, 820)
+        self.game_window_button.move(1100, 860)
 
         # 绑定事件
         self.delete_button.clicked.connect(self.delete_user)
         self.select_all_button.clicked.connect(self.select_all)
-        self.clear_button.clicked.connect(self.clear)
+        # self.clear_button.clicked.connect(self.clear)
         self.show_password_button.clicked.connect(self.show_password)
         self.add_button_.clicked.connect(self.add_user)
         self.update_button.clicked.connect(self.update_password)
         self.refresh_button.clicked.connect(self.refresh)
         self.prototype_register_window_button.clicked.connect(self.prototype_register_win_window)
+        self.admin_prototype_register_window_button.clicked.connect(self.admin_prototype_register_win_window)
+        self.game_window_button.clicked.connect(self.game_win_window)
 
+        # 设置大小
         self.prototype_register_window_button.setFixedSize(200, 40)
+        self.admin_prototype_register_window_button.setFixedSize(200, 40)
 
     def prototype_register_win_window(self):
         self.prototype_register_win.show()
+
+    def admin_prototype_register_win_window(self):
+        self.admin_prototype_register_win.show()
+
+    def game_win_window(self):
+        self.game_win.show()
 
     def delete_user(self):
         choose_list = []
@@ -203,8 +224,7 @@ class AdminWindow(QWidget):
             if i.isChecked():
                 username = self.table.item(self.check_list.index(i), 1).text()
                 if username == 'admin':
-                    answer = QMessageBox.critical(self, 'Error', 'You are going to delete the super user, but it will be created later with the default password',
-                                                  QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
+                    answer = QMessageBox.critical(self, 'Error', 'You are going to delete the super user, but it will be created later with the default password', QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
                     if answer == QMessageBox.Yes:
                         choose_list.append(i)
                     if answer == QMessageBox.Cancel:
@@ -214,10 +234,9 @@ class AdminWindow(QWidget):
 
         for i in choose_list:
             username = self.table.item(self.check_list.index(i), 1).text()
-            self.database.delete_table_by_username(username)
+            self.database2.delete_table_by_username(username)
             self.table.removeRow(self.check_list.index(i))  # removeRow(去除这一行)
             self.check_list.remove(i)  # 检查列表。删除（i）
-        self.database.create_table()  # 创建表格
 
     def select_all(self):
         """选择是否选择全部"""
@@ -241,11 +260,12 @@ class AdminWindow(QWidget):
         username = self.username_edit.text()
         password = self.password_edit.text()
         if all((username, password)):
-            flag = self.database.insert_table(username, password)
+            flag = self.database2.insert_table(username, password)
             if flag:
                 QMessageBox.critical(self, 'Error', 'Already exists the username {}, please use another username'.format(username))
             else:
-                self.add_row(username, password, self.database.get_time())
+                data = self.database2.is_has_admin(username)  # 获取这一行信息加入GUI表里面
+                self.add_row(data)
             self.username_edit.setText('')  # 清空输入的用户信息
             self.password_edit.setText('')
         else:
@@ -255,15 +275,15 @@ class AdminWindow(QWidget):
         """清空所有的数据，包括数据库和表格中的数据"""
         self.table.clearContents()  # 清空表格的内容
         self.table.setRowCount(0)  # 将表格的行数重置为0
-        self.database.clear()  # 清空数据库数据
+        self.database2.clear()  # 清空数据库数据
 
     def update_password(self):
         """更新密码"""
         username = self.update_username_edit.text()
         password = self.update_password_edit.text()
         if len(password) >= 6:
-            self.database.update_table(username, password)
             self.change_table(username, password)
+            self.database2.update_table(username, password)
             self.update_password_edit.setText('')
             self.update_username_edit.setText('')
         else:
@@ -283,16 +303,16 @@ class AdminWindow(QWidget):
 
     def refresh(self):
         """重新加载数据库并显示"""
-        self.table.clearContents()
-        self.check_list.clear()
-        self.table.setRowCount(0)
-        self.database.create_table()
-        self.get_all_user()
+        self.table.clearContents()  # 清空表格的内容
+        self.check_list.clear()  # 检查列表清除
+        self.table.setRowCount(0)  # 将表格的行数重置为0
+        self.database2.create_table()  # 重新加载表
+        self.get_all_user()  # 生成所有数据到GUI表上面
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    admin = AdminWindow()
+    admin = AdminWindow2()
     admin.show()
     sys.exit(app.exec_())

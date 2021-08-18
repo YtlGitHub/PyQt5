@@ -4,24 +4,21 @@ from PyQt5.Qt import *
 # sys -> 获取系统的信息，比如命令行的，并且承担关闭窗口后完全退出的责任
 import sys
 import os
-from Sign_Up import SignWindow
-from Database import Database
-from Main import Main
-from Admin import AdminWindow
+from Sign_Up2 import SignWindow2
+from Database2 import Database2
+from Admin2 import AdminWindow2
 from PrototypeRegister import PrototypeRegisterWindow
-from AdminPrototypeRegister import AdminPrototypeRegisterWindow
 
 
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.icon = QIcon("./IMG/logo.png")  # 图标
-        self.database = Database('./data.db')  # 数据路径
-        self.admin_win = AdminWindow()  # 创建管理员界面
-        self.admin_prototype_register_Win = AdminPrototypeRegisterWindow()  # 创建管理员mysql修改增加界面
-        self.prototype_register_win = PrototypeRegisterWindow()  # 创建数据查询界面
-        self.sign_up_win = SignWindow()  # 创建的注册窗口
-        self.main_win = Main()  # 登入后的主页面
+        self.icon = QIcon("./IMG/wanywn.png")  # 图标
+        # self.database = Database('./data.db')  # 数据路径
+        self.database2 = Database2()  # 调用Database2自定义类，里面有自定义mysql数据库连接方法，和增删改查方法
+        self.admin_win = AdminWindow2()  # 创建管理员界面
+        self.sign_up_win = SignWindow2()  # 创建的注册窗口
+        self.prototype_register_win = PrototypeRegisterWindow()  # 调用机型客户界面
         self.setWindowTitle('Login in')  # setWindowTitle -> 设置窗口的标题
         self.setFixedSize(1000, 700)  # setFixedSize 固定窗口大小
         # self.resize(1000, 800)  # resize -> 设置窗口的大小
@@ -63,7 +60,7 @@ class MyWindow(QMainWindow):
         self.cyberits_label.setFixedSize(700, 40)  # 设置标签大小
         self.username_label.move(120, 530)  # 设置文本位置
         self.password_label.move(120, 600)  # 设置文本位置
-        self.cyberits_label.move(150, 100)  # 设置文本位置
+        self.cyberits_label.move(200, 100)  # 设置文本位置
         self.username_label.setFont(label_font)  # 设置字体样式
         self.password_label.setFont(label_font)  # 设置字体样式
         self.cyberits_label.setFont(label_font)  # 设置字体样式
@@ -131,20 +128,16 @@ class MyWindow(QMainWindow):
         """登录功能实现"""
         username = self.username_edit.text()
         password = self.password_edit.text()
-        data = self.database.find_password_by_username(username)  # 在数据库中查找数据
         if username and password:  # 如果两个输入框都不为空
+            data = self.database2.is_has_admin(username)  # 在数据库中查找数据
             if data:
-                if str(data[0][0]) == password:
+                if str(data[0][1]) == password:
                     # QMessageBox.information(self, 'Successfully', 'Login in successful \n Welcome {}'.format(username), QMessageBox.Yes | QMessageBox.No)
                     self.password_edit.setText('')  # 登录成功，将之前的用户信息清除
                     self.username_edit.setText('')
                     self.close()
                     if username == 'admin':  # 如果是管理员，进入管理界面
                         self.admin_win.show()
-                    elif username == 'admin2':  # 如果是游戏管理员，进入游戏管理界面
-                        self.main_win.show()
-                    elif username == 'adminmysql':  # 如果是管理员mysql，进入mysql管理界面
-                        self.admin_prototype_register_Win.show()
                     else:
                         self.prototype_register_win.show()  # 否则进入客户mysql管理界面
                 else:
@@ -157,9 +150,9 @@ class MyWindow(QMainWindow):
             QMessageBox.information(self, 'Error', 'Fill in the blank', QMessageBox.Yes | QMessageBox.No)
 
     def sign_up_window(self):
-        self.sign_up_win.setWindowIcon(self.icon)
+        self.sign_up_win.setWindowIcon(self.icon)  # 图标
         self.sign_up_win.move(self.x() + 100, self.y() + 100)  # 移动一下注册窗口，以免和之前的重复
-        self.sign_up_win.setWindowFlag(Qt.Dialog)
+        self.sign_up_win.setWindowFlag(Qt.Dialog)  #
         # 打开注册窗口时，清除原来的信息
         self.username_edit.setText('')
         self.password_edit.setText('')
