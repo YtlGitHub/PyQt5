@@ -14,7 +14,7 @@ db_user: ytluser
 db_pass: ytl
 
 # 配置连接的数据库
-db_name: db01
+db_name: db_name
 
 # 配置连接数据库的表
 db_table: prototype_info
