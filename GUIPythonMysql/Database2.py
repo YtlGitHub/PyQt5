@@ -1,16 +1,21 @@
 import sqlite3
-import time
-import pymysql
+import time  # 导入时间
+import pymysql  # 导入pymysql用来连接数据库
+import yaml  # 导入yaml用来读取配置文件
 
 
 class Database2:
     """为登录界面所提供数据库操作的类"""
-    db_host_gs = "10.127.56.173"
-    db_host_jia = "192.168.43.136"
-    db_host = db_host_jia
-
-    def __init__(self, db_host="10.127.56.173", db_user="ytluser", db_pass="ytl", db_name="prototype_register"):
-        print(db_host)
+    def __init__(self):
+        db_data = self.read_yml()
+        db_host = db_data["db_host"]
+        # print("本地ip：", db_host)
+        db_user = db_data["db_user"]
+        # print("用户名：", db_user)
+        db_pass = db_data["db_pass"]
+        # print("用户密码：", db_pass)
+        db_name = db_data["db_name"]
+        # print("数据库名：", db_name)
         self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name, charset='utf8')  # 打开数据库连接
         self.cursor = self.connect.cursor()  # 获取操作游标
         # print('连接成功')
@@ -26,8 +31,27 @@ class Database2:
     def database(self, db):
         self._database = db
 
+    def read_yml(self):
+        with open("db_data.yml", "r", encoding="utf-8") as f:
+            # Loader=yaml.FullLoader 这个表示如果您是触发警告的 Python 代码的作者/维护者，停止收到警告的最佳方法是指定Loader=参数
+            # BaseLoader
+            # 只加载最基本的 YAML。所有标量都作为字符串加载。
+            # SafeLoader
+            # 安全地加载 YAML 语言的子集。建议加载不受信任的输入。
+            # FullLoader
+            # 加载完整的 YAML 语言。避免任意代码执行。这是当前（PyYAML 5.1+）调用的默认加载器yaml.load(input)（发出警告后）。
+            db_data = yaml.load(f.read(), Loader=yaml.FullLoader)  # 用字典的方式读取db_data.yml数据db_data={'db_host': 'localhost', # 'db_user': 'ytluser', 'db_pass': 'ytl', 'db_name': 'db01', 'db_table': 'prototype_info'}
+            return db_data
+
+    def write_yml(self):
+        db_data = self.read_yml()
+        with open("db_data1.yml", "w", encoding="utf-8") as f:
+            yaml.dump(db_data, stream=f, allow_unicode=True)
+
     def create_table(self):  # 创建表
         sql = "CREATE TABLE IF NOT EXISTS AdminData(username TEXT, password TEXT, created_time TEXT)"
+        self.cursor.execute(sql)
+        sql = "CREATE TABLE IF NOT EXISTS prototype_info(id TEXT, id_name TEXT, de TEXT, brand TEXT, pv TEXT, os TEXT, m_name TEXT, IMEI TEXT, name TEXT, user_name TEXT, borrow_time TEXT, still_time TEXT)"
         self.cursor.execute(sql)
         if not self.is_has_admin('admin'):  #
             created_time = self.get_time()  # 设置当前添加的时间
@@ -35,7 +59,11 @@ class Database2:
             self.cursor.execute(default)
         if not self.is_has_admin('ytl123'):  #
             created_time = self.get_time()  # 设置当前添加的时间
-            default3 = f"insert into AdminData(username, password, created_time) values('ytl123', '123456', '{created_time}')"
+            default2 = f"insert into AdminData(username, password, created_time) values('ytl123', '123456', '{created_time}')"
+            self.cursor.execute(default2)
+        if not self.is_has_value('id', '1'):  #
+            borrow_time = self.get_time()  # 设置当前添加的时间
+            default3 = f"insert into prototype_info(id, id_name, de, brand, pv, os, m_name, IMEI, name, user_name, borrow_time, still_time) values('1', 'id_name', 'de', 'brand', 'pv', 'os', 'm_name', 'IMEI', 'name', 'user_name', '{borrow_time}', 'null')"
             self.cursor.execute(default3)
         self.connect.commit()
         #self.connect.close()
@@ -155,8 +183,5 @@ class Database2:
 
 if __name__ == '__main__':
     data = Database2()
-    # data_field = data.read_table_field()  # 获取字段
-    #print(data_field)
-    # data.insert_table('user', '123456')
     data_ = data.read_table()  # 读取所有数据
     print(data_)
