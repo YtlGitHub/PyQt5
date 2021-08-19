@@ -141,6 +141,16 @@ class AdminPrototypeRegisterWindow(QWidget):
         self.username_label.move(move_x, move_y)
         self.username_label.setText('欢迎进入YTLMySQL系统')
 
+    # def row_count(self):
+    #     fixe_x = 200
+    #     fixe_y = 30
+    #     move_x = 1500
+    #     move_y = 630
+    #     self.username_label = QLabel(self)
+    #     self.username_label.setFixedSize(fixe_x, fixe_y)
+    #     self.username_label.move(move_x, move_y)
+    #     self.username_label.setText(f'查询到{self.N+1}条数据')
+
     def get_all_prototype(self):
         """获取所有的机型信息"""
         self.table.setRowCount(0)  # 将表格的行数重置为0
@@ -212,7 +222,7 @@ class AdminPrototypeRegisterWindow(QWidget):
         else:
             QMessageBox.critical(self, 'Error', '输入id框为空')
 
-    def add_row(self,data):
+    def add_row(self, data):
         """在表格上添加一行新的内容"""
         for i in data:
             row = self.table.rowCount()  # 表格的行数
