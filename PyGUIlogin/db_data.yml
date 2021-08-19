@@ -1,0 +1,20 @@
+# 数据库配置信息
+#db_host_gs: "10.127.56.173"
+#db_host_jia: "192.168.43.136"
+#db_host_localhost: "localhost"
+
+
+# 配置自己电脑ip地址
+db_host: localhost
+
+# 配置自己登入数据库的用户名
+db_user: ytluser
+
+# 配置自己登入数据库的密码
+db_pass: ytl
+
+# 配置连接的数据库
+db_name: db01
+
+# 配置连接数据库的表
+db_table: prototype_info
