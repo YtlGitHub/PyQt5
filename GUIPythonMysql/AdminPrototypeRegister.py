@@ -16,10 +16,10 @@ class AdminPrototypeRegisterWindow(QWidget):
         self.set_ui()
 
     def set_ui(self):
-        self.setWindowTitle("查找YTL的机型信息")
-        self.setFixedSize(1600, 900)
-        self.font = QFont("arial")
-        self.setFont(self.font)
+        self.setWindowTitle("查找YTL的机型信息")  # 标题
+        self.setFixedSize(1600, 900)  # 宽高
+        self.font = QFont("arial")  # 字体样式
+        self.setFont(self.font)  # 应用字体样式
         self.setWindowIcon(QIcon("IMG/wanywn.png"))  # 设置图标
         self.add_label()  # 添加界面上的标签控件
         self.add_table()  # 制定表格格式
@@ -141,15 +141,12 @@ class AdminPrototypeRegisterWindow(QWidget):
         self.username_label.move(move_x, move_y)
         self.username_label.setText('欢迎进入YTLMySQL系统')
 
-    # def row_count(self):
-    #     fixe_x = 200
-    #     fixe_y = 30
-    #     move_x = 1500
-    #     move_y = 630
-    #     self.username_label = QLabel(self)
-    #     self.username_label.setFixedSize(fixe_x, fixe_y)
-    #     self.username_label.move(move_x, move_y)
-    #     self.username_label.setText(f'查询到{self.N+1}条数据')
+        self.row_count_label = QLabel(self)
+        self.row_count_label.setFixedSize(fixe_x, fixe_y)
+        self.row_count_label.move(move_x+1490, move_y+630)
+
+    def row_count(self):  # 添加查询在GUI界面显示数量
+        self.row_count_label.setText(f'查询到{self.table.rowCount()}条数据')
 
     def get_all_prototype(self):
         """获取所有的机型信息"""
@@ -238,6 +235,7 @@ class AdminPrototypeRegisterWindow(QWidget):
             self.table.setCellWidget(row, 0, widget)
             for j in range(len(i)):
                 self.table.setItem(row, j+1, QTableWidgetItem(str(i[j])))  # 将用户信息插入到表格中
+        self.row_count()
 
 # =================================================================
 

@@ -18,11 +18,12 @@ class PrototypeRegisterWindow(QWidget):
         self.set_ui()
 
     def set_ui(self):
-        self.setWindowTitle("查找YTL的机型信息")
-        self.setFixedSize(1600, 900)
-        self.font = QFont("arial")
-        self.setFont(self.font)
+        self.setWindowTitle("查找YTL的机型信息")  # 标题
+        self.setFixedSize(1600, 900)  # 宽高
+        self.font = QFont("arial")  # 字体样式
+        self.setFont(self.font)  # 应用字体样式
         self.setWindowIcon(QIcon("./IMG/wanywn.png"))  # 设置图标
+        self.add_label()  # 添加文字标签
         self.add_table()  # 制定表格格式
         self.add_button()  # 添加按钮并绑定事件
         self.add_line_edit()  # 制定输入框位置
@@ -32,7 +33,7 @@ class PrototypeRegisterWindow(QWidget):
         """添加数据表格"""
         self.table.setFixedWidth(1590)  # 设置宽度
         self.table.setFixedHeight(600)  # 设置高度
-        self.table.move(10, 10)  # 设置显示的位置
+        self.table.move(10, 30)  # 设置显示的位置
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)  # 自动填充
         self.table.horizontalHeader().setFont(self.font)  # 设置一下字体
         # self.table.setSelectionMode(QAbstractItemView.SingleSelection)  # 只能单选
@@ -50,6 +51,7 @@ class PrototypeRegisterWindow(QWidget):
         move_y = 665
         fixe_x = 100
         fixe_y = 30
+
         self.key_edit = QLineEdit(self)
         self.key_edit.setFixedSize(fixe_x, fixe_y)
         self.key_edit.move(move_x, move_y)
@@ -73,7 +75,7 @@ class PrototypeRegisterWindow(QWidget):
         self.add_button_ = QPushButton(self)
         self.add_button_.setText("All")
         self.add_button_.setToolTip("展示所有数据")
-        self.add_button_.move(move_x, move_y-10)
+        self.add_button_.move(move_x, move_y)
         self.add_button_.clicked.connect(self.get_all_prototype)
 
         self.add_button_ = QPushButton(self)
@@ -94,7 +96,25 @@ class PrototypeRegisterWindow(QWidget):
         self.add_button_.move(1500, 850)
         self.add_button_.clicked.connect(self.game_win_window)
 
-    def game_win_window(self):
+    def add_label(self):
+        """添加界面上的标签控件"""
+        fixe_x = 200
+        fixe_y = 30
+        move_x = 10
+        move_y = 0
+        self.username_label = QLabel(self)
+        self.username_label.setFixedSize(fixe_x, fixe_y)
+        self.username_label.move(move_x, move_y)
+        self.username_label.setText('欢迎进入YTLMySQL系统')
+
+        self.row_count_label = QLabel(self)
+        self.row_count_label.setFixedSize(fixe_x, fixe_y)
+        self.row_count_label.move(move_x + 1490, move_y + 630)
+
+    def row_count(self):  # 添加查询在GUI界面显示数量
+        self.row_count_label.setText(f'查询到{self.table.rowCount()}条数据')
+
+    def game_win_window(self):  # 添加我的小游戏
         self.game_win.show()
 
     def get_all_prototype(self):
@@ -148,6 +168,7 @@ class PrototypeRegisterWindow(QWidget):
             self.table.setCellWidget(row, 0, widget)
             for j in range(len(i)):
                 self.table.setItem(row, j+1, QTableWidgetItem(str(i[j])))  # 将用户信息插入到表格中
+        self.row_count()
 
 # =================================================================
 
