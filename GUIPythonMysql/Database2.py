@@ -17,11 +17,12 @@ class Database2:
         db_name = db_data["db_name"]
         # print("数据库名：", db_name)
         self.connect = pymysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name, charset='utf8')  # 打开数据库连接
-        self.cursor = self.connect.cursor()  # 获取操作游标
+        # self.cursor = self.connect.cursor(pymysql.cursors.DictCursor)  # 获取操作游标，加个pymysql.cursors.DictCursor是以字典类型返回结果
+        self.cursor = self.connect.cursor()  # 获取操作游标以元祖类型返回结果
         # print('连接成功')
-        self.create_table()
-        # self.insert_prototype_info()
-        # self.connect.close()
+        self.create_table()  # 判断有无表，有就不创建，无就创建
+        # self.cursor.close()  # 关闭操作游标
+        # self.connect.close()  # 关闭数据库连接
 
     @property  # 通过 @property 装饰器，可以直接通过方法名来访问方法，不需要在方法名后添加一对“（）”小括号。需要注意的是，如果类中只包含该方法，那么 database 属性将是一个只读属性。也就是说，在使用 Database 类时，无法对 database 属性重新赋值，即运行代码会报错
     def database(self):
@@ -184,4 +185,6 @@ class Database2:
 if __name__ == '__main__':
     data = Database2()
     data_ = data.read_table()  # 读取所有数据
-    print(data_)
+    for i in data_:
+        print(i)
+    #print(data_)
