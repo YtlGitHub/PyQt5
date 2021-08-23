@@ -50,9 +50,9 @@ class Database2:
             yaml.dump(db_data, stream=f, allow_unicode=True)
 
     def create_table(self):  # 创建表
-        sql = "CREATE TABLE IF NOT EXISTS AdminData(username TEXT, password TEXT, created_time TEXT)"
+        sql = "CREATE TABLE IF NOT EXISTS AdminData(username varchar(25) not null, password varchar(25) not null, created_time date)character set utf8 collate utf8_general_ci"
         self.cursor.execute(sql)
-        sql = "CREATE TABLE IF NOT EXISTS prototype_info(id TEXT, id_name TEXT, de TEXT, brand TEXT, pv TEXT, os TEXT, m_name TEXT, IMEI TEXT, name TEXT, user_name TEXT, borrow_time TEXT, still_time TEXT)"
+        sql = "CREATE TABLE IF NOT EXISTS prototype_info(id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, id_name INT not null, de VARCHAR(100), brand VARCHAR(100), pv int, os varchar(255), m_name varchar(255), IMEI bigint(15), name varchar(255), user_name varchar(255), borrow_time date, still_time date)character set utf8 collate utf8_general_ci"
         self.cursor.execute(sql)
         if not self.is_has_admin('admin'):  #
             created_time = self.get_time()  # 设置当前添加的时间
@@ -64,7 +64,7 @@ class Database2:
             self.cursor.execute(default2)
         if not self.is_has_value('id', '1'):  #
             borrow_time = self.get_time()  # 设置当前添加的时间
-            default3 = f"insert into prototype_info(id, id_name, de, brand, pv, os, m_name, IMEI, name, user_name, borrow_time, still_time) values('1', 'id_name', 'de', 'brand', 'pv', 'os', 'm_name', 'IMEI', 'name', 'user_name', '{borrow_time}', 'null')"
+            default3 = f"insert into prototype_info(id, id_name, de, brand, pv, os, m_name, IMEI, name, user_name, borrow_time, still_time) values(1, 19066, 'de', 'brand', 11, 'V11.1', 'm_name', IMEI, 'name', 'user_name', '{borrow_time}', null)"
             self.cursor.execute(default3)
         self.connect.commit()
         #self.connect.close()
@@ -81,6 +81,7 @@ class Database2:
 
     def insert_prototype_info(self, sql):  # 插入数据,sql语句自己写
         try:
+            print(sql)
             self.cursor.execute(sql)
             self.connect.commit()
             return True
@@ -184,6 +185,7 @@ class Database2:
 
 if __name__ == '__main__':
     data = Database2()
+    data.create_table()
     data_ = data.read_table()  # 读取所有数据
     for i in data_:
         print(i)
