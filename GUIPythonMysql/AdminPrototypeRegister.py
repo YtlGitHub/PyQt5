@@ -36,9 +36,9 @@ class AdminPrototypeRegisterWindow(QWidget):
         self.table.horizontalHeader().setFont(self.font)  # 设置一下字体
         # self.table.setSelectionMode(QAbstractItemView.SingleSelection)  # 只能单选
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)  # 只能选择整行
-        self.table.setColumnCount(13)  # 设置列数
         data_liat_field = self.database2.read_table_field()  # 调用Database2.read_table_field()自定义方法，读取表格的字段
         data_liat_field.insert(0, "Choice")  # 在列表下标为0的地方插入”Choice“字段
+        self.table.setColumnCount(len(data_liat_field))  # 设置列数
         self.table.setHorizontalHeaderLabels(data_liat_field)  # 设置首行字段
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 表格中的内容设置为无法修改
         self.table.verticalHeader().hide()  # 把序号隐藏
