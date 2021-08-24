@@ -293,7 +293,6 @@ class AdminWindow2(QWidget):
         """更新表格"""
         find_flag = False
         for row in range(self.table.rowCount()):  # range(范围) self.table.rowCount()(表格的行数)
-            print(self.table.rowCount())
             username_find = self.table.item(row, 1).text()
             if username_find == username:
                 self.table.item(row, 2).setText(password)

@@ -158,8 +158,9 @@ class Database2:
 
     def update_prototype_info(self, field, value, id_):
         """修改数据"""
+        get_time = self.get_time()
         try:
-            sql = f'update prototype_info set {field}="{value}" where id = {id_}'
+            sql = f'update prototype_info set {field}="{value}",borrow_time="{get_time}" where id = {id_}'
             self.cursor.execute(sql)
             self.connect.commit()
             return True
